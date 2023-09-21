@@ -66,6 +66,7 @@ void Enemy::Update() {
 		break;
 	}
 
+
 	// ワールドトランスフォームの更新　場所動かすときに使える
 	worldTransform_.UpdateMatrix();
 
