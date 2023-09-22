@@ -21,6 +21,10 @@ Player::~Player() {
 	}
 }
 
+void Player::OnCollision() {
+//何もしない
+}
+
 Vector3 Player::GetWorldPosition() {
 
 	// ワールド座標を入れる変数
@@ -32,6 +36,8 @@ Vector3 Player::GetWorldPosition() {
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
 	return worldPos;
 }
+
+int Player::GetRadius() { return int(); }
 
 void Player::Initialize(Model* model, uint32_t textureHandle) {
 	// 引数から受け取ったモデルが組み込まれているかチェック

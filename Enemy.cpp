@@ -28,6 +28,8 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
+int Enemy::GetRadius() { return 0; }
+
 void Enemy::Initialize(Model* model, const Vector3& velocity) {
 	// NULLポインタチェック
 	assert(model);
@@ -128,6 +130,10 @@ void Enemy::Fire() {
 
 	// 弾を登録する
 	bullets_.push_back(newBullet);
+}
+
+void Enemy::OnCollision() {
+//何もしない
 }
 
 void Enemy::ApproachInitialize() {

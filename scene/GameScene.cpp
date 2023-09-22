@@ -5,6 +5,7 @@
 #include "TextureManager.h"
 #include <cassert>
 
+
 GameScene::GameScene() {
 
 }
@@ -13,6 +14,7 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete player_;
 	delete enemy_;
+	delete modelSkydome_;
 }
 
 void GameScene::Initialize() {
@@ -49,6 +51,15 @@ void GameScene::Initialize() {
 	// 敵キャラの初期化
 	Vector3 velocity(0.0f, 0.0f, 1.0f); // 速度を設定する
 	enemy_->Initialize(model_, velocity);
+
+	
+	
+	//3Dモデルの生成
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	// スカイドームの生成
+	skydome_ = new Skydome();
+	// スカイドーム初期化
+	skydome_->Initialize(modelSkydome_);
 }
 
 void GameScene::Update() {
@@ -75,6 +86,11 @@ void GameScene::Update() {
 	player_->Rotate();
 	// 敵キャラの更新
 	enemy_->Update();
+	
+	// 当たり判定
+	CheckAllCollisions();
+	
+
 }
 
 void GameScene::Draw() {
@@ -124,3 +140,124 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
+
+void GameScene::CheckAllCollisions() {
+
+//判定対象AとBの座標
+	Vector3 PosA, PosB;
+	int RadiusA, RadiusB;
+	float PositionMeasure;
+	int RadiusMeasure;
+
+	//自弾リストの取得
+	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
+
+	
+
+
+	// 敵弾リストの取得
+	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+
+	#pragma region 自キャラと敵弾の当たり判定
+
+	//自キャラの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	//自キャラと敵弾全ての当たり判定
+	for (EnemyBullet* bullet : enemyBullets) {
+	//敵弾の座標
+		PosB = bullet->GetWorldPosition();
+		RadiusB = bullet->GetRadius();
+		//座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			        (PosB.y - PosA.y) * (PosB.y - PosA.y) +
+		            (PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (RadiusA + RadiusB) * (RadiusA + RadiusB);
+		//弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure) {
+			// 自キャラの衝突時コールバックを呼び出す
+			player_->OnCollision();
+			// 敵弾の衝突時コールバックを呼び出す
+			bullet->OnCollision();
+		}
+	}
+#pragma endregion
+
+	#pragma region 自弾と敵キャラの当たり判定
+
+	// 敵キャラの座標
+	PosA = enemy_->GetWorldPosition();
+	RadiusA = enemy_->GetRadius();
+	// 敵キャラと敵弾全ての当たり判定
+	for (PlayerBullet* bullet : playerBullets) {
+		// 自弾の座標
+		PosB = bullet->GetWorldPosition();
+		RadiusB = bullet->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) + 
+			        (PosB.y - PosA.y) * (PosB.y - PosA.y) +
+		            (PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (RadiusA + RadiusB) * (RadiusA + RadiusB);
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure) {
+			// 敵キャラの衝突時コールバックを呼び出す
+			enemy_->OnCollision();
+			// 自弾の衝突時コールバックを呼び出す
+			bullet->OnCollision();
+		}
+	}
+#pragma endregion
+
+	#pragma region 自弾と敵弾の当たり判定
+
+	// 自キャラと敵弾全ての当たり判定
+	for (PlayerBullet* bulletA : playerBullets) {
+		for (EnemyBullet* bulletB : enemyBullets) {
+			// 自弾の座標
+			PosA = bulletA->GetWorldPosition();
+			RadiusA = bulletA->GetRadius();
+			// 敵弾の座標
+			PosB = bulletB->GetWorldPosition();
+			RadiusB = bulletB->GetRadius();
+			PositionMeasure  = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
+			            (PosB.y - PosA.y) * (PosB.y - PosA.y) +
+			            (PosB.z - PosA.z) * (PosB.z - PosA.z);
+
+			 RadiusMeasure = (RadiusA + RadiusB) * (RadiusA + RadiusB);
+
+			if (PositionMeasure <= RadiusMeasure) {
+				// 自弾の衝突時コールバックを呼び出す
+				bulletA->OnCollision();
+				// 敵キャラの衝突時コールバックを呼び出す
+				bulletB->OnCollision();
+			}
+		}
+	}
+#pragma endregion
+
+	#pragma region 自キャラと敵キャラの当たり判定
+
+
+	// 自キャラの座標
+	PosA = player_->GetWorldPosition();
+	RadiusA = player_->GetRadius();
+	// 自キャラと敵キャラ全ての当たり判定
+			// 敵キャラの座標
+		PosB = enemy_->GetWorldPosition();
+		RadiusB = enemy_->GetRadius();
+		// 座標AとBの距離を求める
+		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) + (PosB.y - PosA.y) * (PosB.y - PosA.y) +
+		            (PosB.z - PosA.z) * (PosB.z - PosA.z);
+		RadiusMeasure = (RadiusA + RadiusB) * (RadiusA + RadiusB);
+		// 弾と弾の交差判定
+		if (PositionMeasure <= RadiusMeasure) {
+			// 自キャラの衝突時コールバックを呼び出す
+			player_->OnCollision();
+			// 敵キャラの衝突時コールバックを呼び出す
+			enemy_->OnCollision();
+		}
+#pragma endregion
+
+	}
+
+

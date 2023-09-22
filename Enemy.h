@@ -20,6 +20,8 @@ public:
 	void Draw(const ViewProjection& viewProjection_);
 	// 攻撃
 	void Fire();
+	// 衝突を検知したら呼び出されるコールバック関数
+	void OnCollision();
 	// 接近フェーズの初期化
 	void ApproachInitialize();
 	// setterの利用
@@ -27,9 +29,15 @@ public:
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
+	// 弾リストを取得
+	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
+	// 大きさ取得
+	int GetRadius();
 
 	// 発射間隔
 	static const int kFireInterval = 60;
+
+	
 
 private:
 	// 行動フェーズ
@@ -58,4 +66,6 @@ private:
 
 	// 自キャラ
 	Player* player_ = nullptr;
+
+	
 };

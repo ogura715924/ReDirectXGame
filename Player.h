@@ -18,6 +18,8 @@ public:
 	void Attack();
 	// デストラクタ
 	~Player();
+	//衝突を検知したら呼び出されるコールバック関数
+	void OnCollision();
 	// 発射間隔
 	void Interval();
 	// 描画
@@ -26,10 +28,15 @@ public:
 	// 発射間隔
 	static const int kAttackInterval = 20;
 
+		// 弾リストを取得
+	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
+
 	// キーボード入力
 	Input* input_ = nullptr;
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
+	//大きさ取得
+	int GetRadius();
 
 private:
 	// 弾
@@ -43,4 +50,5 @@ private:
 	uint32_t textureHandle_ = 0u;
 	// 発射タイマー
 	int32_t AttackTimer = 0;
+
 };
