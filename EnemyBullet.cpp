@@ -1,35 +1,35 @@
-#include"EnemyBullet.h"
+ï»¿#include"EnemyBullet.h"
 #include <cassert>
 
 void EnemyBullet::Intialize(Model* model, const Vector3& position, const Vector3& velocity) {
 
-	// NULLƒ|ƒCƒ“ƒ^ƒ`ƒFƒbƒN
+	// NULLãƒã‚¤ãƒ³ã‚¿ãƒã‚§ãƒƒã‚¯
 	assert(model);
 
 	model_ = model;
-	// ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 	textureHandle_ = TextureManager::Load("kr.png");
 
-	// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ì‰Šú‰»
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®åˆæœŸåŒ–
 	worldTransform_.Initialize();
 
-	// ˆø”‚Åó‚¯æ‚Á‚½‰ŠúÀ•W‚ğƒZƒbƒg
+	// å¼•æ•°ã§å—ã‘å–ã£ãŸåˆæœŸåº§æ¨™ã‚’ã‚»ãƒƒãƒˆ
 	worldTransform_.translation_ = position;
 
-	// ˆø”‚Åó‚¯æ‚Á‚½‘¬“x‚ğƒƒ“ƒo•Ï”‚É‘ã“ü
+	// å¼•æ•°ã§å—ã‘å–ã£ãŸé€Ÿåº¦ã‚’ãƒ¡ãƒ³ãƒå¤‰æ•°ã«ä»£å…¥
 	velocity_ = velocity;
 }
 
 void EnemyBullet::Update() {
-	// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚ÌXV
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®æ›´æ–°
 	worldTransform_.UpdateMatrix();
 
-	// À•W‚ğˆÚ“®‚³‚¹‚é(1ƒtƒŒ[ƒ€•¶‚ÌˆÚ“®—Ê‚ğ‘«‚µ‚±‚Ş)
+	// åº§æ¨™ã‚’ç§»å‹•ã•ã›ã‚‹(1ãƒ•ãƒ¬ãƒ¼ãƒ æ–‡ã®ç§»å‹•é‡ã‚’è¶³ã—ã“ã‚€)
 	worldTransform_.translation_.x -= velocity_.x;
 	worldTransform_.translation_.y -= velocity_.y;
 	worldTransform_.translation_.z -= velocity_.z;
 
-	// ŠÔŒo‰ß‚ÅƒfƒX
+	// æ™‚é–“çµŒéã§ãƒ‡ã‚¹
 	if (--deathTimer_ <= 0) {
 		isDead_ = true;
 	}

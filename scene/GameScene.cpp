@@ -5,7 +5,9 @@
 #include "TextureManager.h"
 #include <cassert>
 
-GameScene::GameScene() {}
+GameScene::GameScene() {
+
+}
 
 GameScene::~GameScene() {
 	delete debugCamera_;

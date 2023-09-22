@@ -1,9 +1,7 @@
 ﻿#pragma once
 #include "Input.h"
-#include "Model.h"
 #include "PlayerBullet.h"
 #include "Vector3.h"
-#include "WorldTransform.h"
 #include <list>
 
 /// 自キャラ
@@ -23,7 +21,7 @@ public:
 	// 発射間隔
 	void Interval();
 	// 描画
-	void Draw(ViewProjection& viewProjection_);
+	void Draw(const ViewProjection& viewProjection_);
 
 	// 発射間隔
 	static const int kAttackInterval = 20;

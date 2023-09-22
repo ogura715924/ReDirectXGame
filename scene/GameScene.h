@@ -48,12 +48,12 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 	// スプライト
-	uint32_t texHandle_ = 0;
+	uint32_t texHandle_ = 0u;
 	// モデル
-	Model* model_;
+	Model* model_ = nullptr;
 	// デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
-	uint32_t textureHandle_;
+	uint32_t textureHandle_ = 0u;
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
 

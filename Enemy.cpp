@@ -1,12 +1,15 @@
-#include "Enemy.h"
+ï»¿#include "Enemy.h"
 #include "Player.h"
 #include <assert.h>
 #include <cassert>
+//#include "Normalize.h"
 
-// ƒfƒXƒgƒ‰ƒNƒ^
+//#include "MyMath.h"
+
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 Enemy::~Enemy() {
 
-	// bullet_‚Ì‰ğ•ú
+	// bullet_ã®è§£æ”¾
 
 	for (EnemyBullet* bullet : bullets_) {
 		delete bullet;
@@ -15,10 +18,10 @@ Enemy::~Enemy() {
 
 Vector3 Enemy::GetWorldPosition() {
 
-	// ƒ[ƒ‹ƒhÀ•W‚ğ“ü‚ê‚é•Ï”
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’å…¥ã‚Œã‚‹å¤‰æ•°
 	Vector3 worldPos{};
 	worldTransform_.matWorld_.m;
-	// ƒ[ƒ‹ƒhs—ñ‚Ì•½sˆÚ“®¬•ª‚ğæ“¾(ƒ[ƒ‹ƒhÀ•W)
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®å¹³è¡Œç§»å‹•æˆåˆ†ã‚’å–å¾—(ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™)
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
 	worldPos.y = worldTransform_.matWorld_.m[3][1];
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
@@ -26,19 +29,19 @@ Vector3 Enemy::GetWorldPosition() {
 }
 
 void Enemy::Initialize(Model* model, const Vector3& velocity) {
-	// NULLƒ|ƒCƒ“ƒ^ƒ`ƒFƒbƒN
+	// NULLãƒã‚¤ãƒ³ã‚¿ãƒã‚§ãƒƒã‚¯
 	assert(model);
 
-	// ˆø”‚©‚çƒ‚ƒfƒ‹‚ÆƒeƒNƒXƒ`ƒƒƒnƒ“ƒhƒ‹‚ğó‚¯æ‚é
+	// å¼•æ•°ã‹ã‚‰ãƒ¢ãƒ‡ãƒ«ã¨ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒ³ãƒ‰ãƒ«ã‚’å—ã‘å–ã‚‹
 	model_ = model;
 	velocity_ = velocity;
-	// ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 	textureHandle_ = TextureManager::Load("jousi.png");
 
-	// Ú‹ßƒtƒF[ƒY‰Šú‰»
+	// æ¥è¿‘ãƒ•ã‚§ãƒ¼ã‚ºåˆæœŸåŒ–
 	ApproachInitialize();
 
-	// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ì‰Šú‰»
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®åˆæœŸåŒ–
 	worldTransform_.Initialize();
 
 	worldTransform_.translation_.z = 3.0f;
@@ -46,36 +49,38 @@ void Enemy::Initialize(Model* model, const Vector3& velocity) {
 
 void Enemy::Update() {
 
-	// À•W‚ğˆÚ“®‚³‚¹‚é
+	// åº§æ¨™ã‚’ç§»å‹•ã•ã›ã‚‹
 	// worldTransform_.translation_.z -= 0.1f;
 
-	// ƒtƒF[ƒY
+	// ãƒ•ã‚§ãƒ¼ã‚º
 	switch (phase_) {
 	case Phase::Approach:
 	default:
-		// ˆÚ“®(ƒxƒNƒgƒ‹‚ğ‰ÁZ)
+		// ç§»å‹•(ãƒ™ã‚¯ãƒˆãƒ«ã‚’åŠ ç®—)
 		worldTransform_.translation_.x += 0.1f;
-		// Šù’è‚ÌˆÊ’u‚É“’B‚µ‚½‚ç—£’E
+		// æ—¢å®šã®ä½ç½®ã«åˆ°é”ã—ãŸã‚‰é›¢è„±
 		if (worldTransform_.translation_.x > 2.0f) {
 			phase_ = Phase::Leave;
 		}
+		break;
 	case Phase::Leave:
-		// ˆÚ“®iƒxƒNƒgƒ‹‚ğ‰ÁZj
+		// ç§»å‹•ï¼ˆãƒ™ã‚¯ãƒˆãƒ«ã‚’åŠ ç®—ï¼‰
 		// worldTransform_.translation_.x += 0.1f;
+		//ã“ã“ã‚ã¨ã§å¤‰ãˆã‚‹
 		worldTransform_.translation_.z -= 0.1f;
 		break;
 	}
 
 
-	// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚ÌXV@êŠ“®‚©‚·‚Æ‚«‚Ég‚¦‚é
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®æ›´æ–°ã€€å ´æ‰€å‹•ã‹ã™ã¨ãã«ä½¿ãˆã‚‹
 	worldTransform_.UpdateMatrix();
-
-	// ’eŠÖ˜A
+	
+	// å¼¾é–¢é€£
 
 	for (EnemyBullet* bullet : bullets_) {
 		bullet->Update();
 	}
-	// ƒfƒXƒtƒ‰ƒO‚Ì—§‚Á‚½’e‚ğíœ
+	// ãƒ‡ã‚¹ãƒ•ãƒ©ã‚°ã®ç«‹ã£ãŸå¼¾ã‚’å‰Šé™¤
 	bullets_.remove_if([](EnemyBullet* bullet) {
 		if (bullet->IsDead()) {
 			delete bullet;
@@ -84,13 +89,13 @@ void Enemy::Update() {
 		return false;
 	});
 
-	// ”­Ëƒ^ƒCƒ}[ƒJƒEƒ“ƒgƒ_ƒEƒ“
+	// ç™ºå°„ã‚¿ã‚¤ãƒãƒ¼ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 	FireTimer--;
-	// w’è‚µ‚½ŠÔ‚É’B‚µ‚½
+	// æŒ‡å®šã—ãŸæ™‚é–“ã«é”ã—ãŸ
 	if (FireTimer <= 0) {
-		// ’e‚ğ”­Ë
+		// å¼¾ã‚’ç™ºå°„
 		Fire();
-		// ”­Ëƒ^ƒCƒ}[‚ğ‰Šú‰»
+		// ç™ºå°„ã‚¿ã‚¤ãƒãƒ¼ã‚’åˆæœŸåŒ–
 		FireTimer = kFireInterval;
 	}
 }
@@ -98,39 +103,40 @@ void Enemy::Update() {
 void Enemy::Fire() {
 	assert(player_);
 
-	// ’e‚Ì‘¬“x
+	// å¼¾ã®é€Ÿåº¦
 	const float kBulletSpeed = 1.0f;
-	// ©ƒLƒƒƒ‰‚Ìƒ[ƒ‹ƒhÀ•W‚ğæ“¾‚·‚é
+
+	// è‡ªã‚­ãƒ£ãƒ©ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’å–å¾—ã™ã‚‹
 	player_->GetWorldPosition();
-	// “GƒLƒƒƒ‰‚Ìƒ[ƒ‹ƒhÀ•W‚ğæ“¾‚·‚é
+	// æ•µã‚­ãƒ£ãƒ©ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’å–å¾—ã™ã‚‹
 	GetWorldPosition();
-	// “GƒLƒƒƒ‰->©ƒLƒƒƒ‰‚Ì·•ªƒxƒNƒgƒ‹‚ğ‹‚ß‚é
+	// æ•µã‚­ãƒ£ãƒ©->è‡ªã‚­ãƒ£ãƒ©ã®å·®åˆ†ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
 	Vector3 DifferenceVector = {
 	    GetWorldPosition().x - player_->GetWorldPosition().x,
 	    GetWorldPosition().y - player_->GetWorldPosition().y,
 	    GetWorldPosition().z - player_->GetWorldPosition().z};
-	// ƒxƒNƒgƒ‹‚Ì³‹K‰»
-	DifferenceVector = Normalize(DifferenceVector);
-	// ƒxƒNƒgƒ‹‚Ì’·‚³‚ğ‘¬‚³‚É‡‚í‚¹‚é
+	// ãƒ™ã‚¯ãƒˆãƒ«ã®æ­£è¦åŒ–
+	//DifferenceVector = Normalize(DifferenceVector);
+	// ãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•ã‚’é€Ÿã•ã«åˆã‚ã›ã‚‹
 	velocity_.x = DifferenceVector.x * kBulletSpeed;
 	velocity_.y = DifferenceVector.y * kBulletSpeed;
 	velocity_.z = DifferenceVector.z * kBulletSpeed;
 
-	// ’e‚ğ¶¬‚µ‰Šú‰»
+	// å¼¾ã‚’ç”Ÿæˆã—åˆæœŸåŒ–
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Intialize(model_, worldTransform_.translation_, velocity_);
 
-	// ’e‚ğ“o˜^‚·‚é
+	// å¼¾ã‚’ç™»éŒ²ã™ã‚‹
 	bullets_.push_back(newBullet);
 }
 
 void Enemy::ApproachInitialize() {
-	// ”­Ëƒ^ƒCƒ}[‚ğ‰Šú‰»
+	// ç™ºå°„ã‚¿ã‚¤ãƒãƒ¼ã‚’åˆæœŸåŒ–
 	FireTimer = 3;
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection_) {
-	// ƒ‚ƒfƒ‹‚Ì•`‰æ
+	// ãƒ¢ãƒ‡ãƒ«ã®æç”»
 	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 
 	for (EnemyBullet* bullet : bullets_) {

@@ -1,10 +1,8 @@
 ﻿#pragma once
 #include "EnemyBullet.h"
-#include "Model.h"
-#include "Vector3.h"
+//#include "Model.h"
 #include "ViewProjection.h"
-#include "WorldTransform.h"
-#include <Matrix4x4.h>
+//#include "WorldTransform.h"
 #include <list>
 
 // 自機クラスの前方宣言
@@ -47,9 +45,9 @@ private:
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 	// 速度
-	Vector3 velocity_;
+	Vector3 velocity_ = {0,0,0};
 
-	// フェーズ
+	// フェーズ　
 	Phase phase_;
 	// 弾
 	EnemyBullet* bullet_ = nullptr;

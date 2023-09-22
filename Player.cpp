@@ -1,30 +1,32 @@
-#include"Player.h"
+ï»¿#include"Player.h"
 #include "WorldTransform.h"
 #include <assert.h>
 #include <cassert>
 #include <imgui.h>
 #include <math.h>
+#include "MyMath.h"
+
 #define _USE_MATH_DEFINES
 
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 Player::~Player() {
 
-	// bullet_‚Ì‰ð•ú
+	// bullet_ã®è§£æ”¾
 
 	for (PlayerBullet* bullet : bullets_) {
-		// bullets -> PlayerBullet*‚ÌƒŠƒXƒg(”z—ñ‚Ì‚·‚²‚¢”Å)
-		// ”ÍˆÍfor‚Å‰½‚ð‚â‚Á‚Ä‚¢‚é‚©
-		// bullet = bullets_[i];‚ð‚â‚Á‚Ä‚¢‚Äbullets_‚Ì”•ª‚¾‚¯ƒ‹[ƒv‚·‚é
+		// bullets -> PlayerBullet*ã®ãƒªã‚¹ãƒˆ(é…åˆ—ã®ã™ã”ã„ç‰ˆ)
+		// ç¯„å›²forã§ä½•ã‚’ã‚„ã£ã¦ã„ã‚‹ã‹
+		// bullet = bullets_[i];ã‚’ã‚„ã£ã¦ã„ã¦bullets_ã®æ•°åˆ†ã ã‘ãƒ«ãƒ¼ãƒ—ã™ã‚‹
 		delete bullet;
 	}
 }
 
 Vector3 Player::GetWorldPosition() {
 
-	// ƒ[ƒ‹ƒhÀ•W‚ð“ü‚ê‚é•Ï”
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’å…¥ã‚Œã‚‹å¤‰æ•°
 	Vector3 worldPos{};
 	worldTransform_.matWorld_.m;
-	// ƒ[ƒ‹ƒhs—ñ‚Ì•½sˆÚ“®¬•ª‚ðŽæ“¾(ƒ[ƒ‹ƒhÀ•W)
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®å¹³è¡Œç§»å‹•æˆåˆ†ã‚’å–å¾—(ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™)
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
 	worldPos.y = worldTransform_.matWorld_.m[3][1];
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
@@ -32,70 +34,71 @@ Vector3 Player::GetWorldPosition() {
 }
 
 void Player::Initialize(Model* model, uint32_t textureHandle) {
-	// ˆø”‚©‚çŽó‚¯Žæ‚Á‚½ƒ‚ƒfƒ‹‚ª‘g‚Ýž‚Ü‚ê‚Ä‚¢‚é‚©ƒ`ƒFƒbƒN
+	// å¼•æ•°ã‹ã‚‰å—ã‘å–ã£ãŸãƒ¢ãƒ‡ãƒ«ãŒçµ„ã¿è¾¼ã¾ã‚Œã¦ã„ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
 	assert(model);
-	// ˆø”‚©‚çƒ‚ƒfƒ‹‚ÆƒeƒNƒXƒ`ƒƒƒnƒ“ƒhƒ‹‚ðŽó‚¯Žæ‚é
+	// å¼•æ•°ã‹ã‚‰ãƒ¢ãƒ‡ãƒ«ã¨ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒ³ãƒ‰ãƒ«ã‚’å—ã‘å–ã‚‹
 	model_ = model;
 	textureHandle_ = textureHandle;
 
-	// X,Y,Z•ûŒü‚ÌƒXƒP[ƒŠƒ“ƒO‚ðÝ’è
+	// X,Y,Zæ–¹å‘ã®ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°ã‚’è¨­å®š
 	/*worldTransform_.scale_ = {5.0f, 1.0f, 1.0f};
 	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};*/
 
-	// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ì‰Šú‰»
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®åˆæœŸåŒ–
 	worldTransform_.Initialize();
 
-	// ƒVƒ“ƒOƒ‹ƒgƒ“ƒCƒ“ƒXƒ^ƒ“ƒX‚ðŽæ“¾‚·‚é
+	// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã™ã‚‹
 	input_ = Input::GetInstance();
 
-	// ”­ŽËŠÔŠu‰Šú‰»
+	// ç™ºå°„é–“éš”åˆæœŸåŒ–
 	Interval();
 }
 void Player::Update() {
 
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌˆÚ“®ƒxƒNƒgƒ‹
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«
 	Vector3 move = {0, 0, 0};
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌˆÚ“®‚Ì‘¬‚³
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç§»å‹•ã®é€Ÿã•
 	const float kCharacterSpeed = 0.2f;
 
-	// ‰Ÿ‚µ‚½•ûŒü‚ÅƒxƒNƒgƒ‹‚ð•ÏX(¶‰E)
+	// æŠ¼ã—ãŸæ–¹å‘ã§ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¤‰æ›´(å·¦å³)
 	if (input_->PushKey(DIK_LEFT)) {
 		move.x -= kCharacterSpeed;
 	} else if (input_->PushKey(DIK_RIGHT)) {
 		move.x += kCharacterSpeed;
 	}
-	// ‰Ÿ‚µ‚½•ûŒü‚ÅƒxƒNƒgƒ‹‚ð•ÏX(ã‰º)
+	// æŠ¼ã—ãŸæ–¹å‘ã§ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¤‰æ›´(ä¸Šä¸‹)
 	if (input_->PushKey(DIK_DOWN)) {
 		move.y -= kCharacterSpeed;
 	} else if (input_->PushKey(DIK_UP)) {
 		move.y += kCharacterSpeed;
 	}
 
-	// À•WˆÚ“®(ƒxƒNƒgƒ‹‚Ì‰ÁŽZ)
+	// åº§æ¨™ç§»å‹•(ãƒ™ã‚¯ãƒˆãƒ«ã®åŠ ç®—)
 	worldTransform_.translation_.x += move.x;
 	worldTransform_.translation_.y += move.y;
 	worldTransform_.translation_.z += move.z;
-	// ˆÚ“®ŒÀŠEÀ•W
+	// ç§»å‹•é™ç•Œåº§æ¨™
 	const float kMoveLimitX = 1280;
 	const float kMoveLimitY = 720;
 
-	// ”ÍˆÍ‚ð’´‚¦‚È‚¢ˆ—
-	move.x = max(move.x, -kMoveLimitX);
-	move.x = min(move.x, +kMoveLimitX);
-	move.y = max(move.y, -kMoveLimitY);
-	move.y = min(move.y, +kMoveLimitY);
+	// ç¯„å›²ã‚’è¶…ãˆãªã„å‡¦ç†
+	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
+	worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
+	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
+	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
 	// worldTransform_.translation_.x = sqrt(move.x * move.x + move.y * move.y);
 	// worldTransform_.translation_.y = sqrt(move.x * move.x + move.y * move.y);
 	// worldTransform_.translation_.z = sqrt(move.x * move.x + move.y * move.y);
 
-	// s—ñXV
-	worldTransform_.matWorld_ = MakeAffineMatrix(
+	// è¡Œåˆ—æ›´æ–°
+	/*worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
-	worldTransform_.TransferMatrix();
+	worldTransform_.TransferMatrix();*/
+	worldTransform_.UpdateMatrix();
 
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌÀ•W‚ð‰æ–Ê•\Ž¦‚·‚éˆ—
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®åº§æ¨™ã‚’ç”»é¢è¡¨ç¤ºã™ã‚‹å‡¦ç†
 	ImGui::Begin("Debug");
 	float playerpos[] = {
 	    worldTransform_.translation_.x, worldTransform_.translation_.y,
@@ -107,13 +110,13 @@ void Player::Update() {
 
 	ImGui::End();
 
-	// ƒLƒƒƒ‰ƒNƒ^[’eUŒ‚ˆ—
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼å¼¾æ”»æ’ƒå‡¦ç†
 	Attack();
-	// ’eXV
+	// å¼¾æ›´æ–°
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
 	}
-	// ƒfƒXƒtƒ‰ƒO‚Ì—§‚Á‚½’e‚ðíœ
+	// ãƒ‡ã‚¹ãƒ•ãƒ©ã‚°ã®ç«‹ã£ãŸå¼¾ã‚’å‰Šé™¤
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->IsDead()) {
 			delete bullet;
@@ -121,22 +124,22 @@ void Player::Update() {
 		}
 		return false;
 	});
-	// ”­ŽËƒ^ƒCƒ}[ƒJƒEƒ“ƒgƒ_ƒEƒ“
+	// ç™ºå°„ã‚¿ã‚¤ãƒžãƒ¼ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 	AttackTimer--;
-	// Žw’è‚µ‚½ŽžŠÔ‚É’B‚µ‚½
+	// æŒ‡å®šã—ãŸæ™‚é–“ã«é”ã—ãŸ
 	if (input_->PushKey(DIK_SPACE) && AttackTimer <= 0) {
-		// ”­ŽËƒ^ƒCƒ}[‚ð–ß‚·
+		// ç™ºå°„ã‚¿ã‚¤ãƒžãƒ¼ã‚’æˆ»ã™
 		AttackTimer = kAttackInterval;
 	}
 
-	// s—ñ‚ð’è”ƒoƒbƒtƒ@‚É“]‘—
+	// è¡Œåˆ—ã‚’å®šæ•°ãƒãƒƒãƒ•ã‚¡ã«è»¢é€
 	worldTransform_.UpdateMatrix();
 }
 
 void Player::Rotate() {
-	// ‰ñ“]‘¬‚³[ƒ‰ƒWƒAƒ“/frame]
+	// å›žè»¢é€Ÿã•[ãƒ©ã‚¸ã‚¢ãƒ³/frame]
 	const float kRotSpeed = 0.02f;
-	// ‰Ÿ‚µ‚½•ûŒü‚ÅˆÚ“®ƒxƒNƒgƒ‹‚ð•ÏX
+	// æŠ¼ã—ãŸæ–¹å‘ã§ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¤‰æ›´
 	if (input_->PushKey(DIK_A)) {
 		worldTransform_.rotation_.y -= kRotSpeed;
 	} else if (input_->PushKey(DIK_D)) {
@@ -145,31 +148,31 @@ void Player::Rotate() {
 }
 
 void Player::Attack() {
-	// ’e‚ð¶¬‚µA‰Šú‰»
+	// å¼¾ã‚’ç”Ÿæˆã—ã€åˆæœŸåŒ–
 
 	if (input_->PushKey(DIK_SPACE) && AttackTimer <= 0) {
 
-		// ’e‚Ì‘¬“x
+		// å¼¾ã®é€Ÿåº¦
 		const float kBulletSpeed = 1.0f;
 		Vector3 velocity(0, 0, kBulletSpeed);
 
-		// ‘¬“xƒxƒNƒgƒ‹‚ðŽ©‹@‚ÌŒü‚«‚É‡‚í‚¹‚Ä‰ñ“]‚³‚¹‚é
+		// é€Ÿåº¦ãƒ™ã‚¯ãƒˆãƒ«ã‚’è‡ªæ©Ÿã®å‘ãã«åˆã‚ã›ã¦å›žè»¢ã•ã›ã‚‹
 		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
-		// ’e‚ð“o˜^‚·‚é
+		// å¼¾ã‚’ç™»éŒ²ã™ã‚‹
 		bullets_.push_back(newBullet);
 	}
 }
 
 void Player::Interval() {
-	// ”­ŽËƒ^ƒCƒ}[‚ð‰Šú‰»
+	// ç™ºå°„ã‚¿ã‚¤ãƒžãƒ¼ã‚’åˆæœŸåŒ–
 	AttackTimer = 3;
 }
 
-void Player::Draw(ViewProjection& ViewProjection) {
-	// 3Dƒ‚ƒfƒ‹‚ð•`‰æ
+void Player::Draw(const ViewProjection& ViewProjection) {
+	// 3Dãƒ¢ãƒ‡ãƒ«ã‚’æç”»
 	model_->Draw(worldTransform_, ViewProjection, textureHandle_);
 
 	for (PlayerBullet* bullet : bullets_) {
