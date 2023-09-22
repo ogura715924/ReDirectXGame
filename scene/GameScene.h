@@ -74,7 +74,6 @@ private: // メンバ変数
 	//スカイドーム
 	Skydome* skydome_ = nullptr;
 
-
 	// テクスチャハンドル
 
 	/// <summary>
