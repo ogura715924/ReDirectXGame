@@ -11,7 +11,7 @@ void Skydome::Initialize(Model* model) {
 	//場所
 	worldTransform_.translation_ = {0, 0, 0};
 	//大きさ
-	worldTransform_.scale_ = {100.0f, 100.0f, 100.0f};
+	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 }
 
 void Skydome::Update() {}

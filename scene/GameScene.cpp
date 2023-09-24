@@ -53,11 +53,10 @@ void GameScene::Initialize() {
 	enemy_->Initialize(model_, velocity);
 
 	
-	
-	//3Dモデルの生成
-	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	// スカイドームの生成
 	skydome_ = new Skydome();
+	// 3Dモデルの生成
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	// スカイドーム初期化
 	skydome_->Initialize(modelSkydome_);
 }
@@ -151,10 +150,6 @@ void GameScene::CheckAllCollisions() {
 
 	//自弾リストの取得
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
-
-	
-
-
 	// 敵弾リストの取得
 	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
 
