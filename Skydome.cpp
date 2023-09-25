@@ -6,15 +6,20 @@ void Skydome::Initialize(Model* model) {
 	assert(model);
 	model_ = model;
 
+
 	//初期化
 	worldTransform_.Initialize();
-	//場所
+	//Transration
 	worldTransform_.translation_ = {0, 0, 0};
-	//大きさ
-	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
+	//Scale
+	worldTransform_.scale_ = {50,50,50};
+
+// ワールドトランスフォームの更新
+	worldTransform_.UpdateMatrix();
 }
 
-void Skydome::Update() {}
+void Skydome::Update() {
+}
 
 void Skydome::Draw(ViewProjection& viewProjection_) {
 	// 3Dモデル描画

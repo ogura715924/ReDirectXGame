@@ -53,12 +53,19 @@ void GameScene::Initialize() {
 	enemy_->Initialize(model_, velocity);
 
 	
+		// 3Dモデルの生成
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+
 	// スカイドームの生成
 	skydome_ = new Skydome();
-	// 3Dモデルの生成
-	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+
 	// スカイドーム初期化
 	skydome_->Initialize(modelSkydome_);
+
+	// ビュープロジェクションの初期化
+	//viewProjection_.farZ = 0.1f;
+	viewProjection_.Initialize();
+	
 }
 
 void GameScene::Update() {
@@ -89,6 +96,8 @@ void GameScene::Update() {
 	// 当たり判定
 	CheckAllCollisions();
 	
+	//スカイドーム
+	skydome_->Update();
 
 }
 
@@ -121,6 +130,9 @@ void GameScene::Draw() {
 	player_->Draw(viewProjection_);
 	// 敵キャラの描画
 	enemy_->Draw(viewProjection_);
+
+	//スカイドームの描画
+	skydome_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

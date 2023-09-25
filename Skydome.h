@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <WorldTransform.h>
 #include <Model.h>
+#include"WorldTransform.h"
 
 class Skydome {
 
