@@ -9,7 +9,7 @@
 class Player {
 public:
 	// 初期化
-	void Initialize(Model* model_, uint32_t textureHandle);
+	void Initialize(Model* model_, uint32_t textureHandle, Vector3 PlayerPostion);
 	// 更新
 	void Update();
 	// 回転
@@ -37,6 +37,9 @@ public:
 	Vector3 GetWorldPosition();
 	//大きさ取得
 	int GetRadius();
+
+	void SetParent(const WorldTransform* parent);
+
 
 private:
 	// 弾

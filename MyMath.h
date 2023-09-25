@@ -24,3 +24,9 @@ Matrix4x4 MakeRotstrZMatrix(float radian);
 
 //アフィン変換行列の作成
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+
+// 正規化
+Vector3 Normalize(const Vector3& v);
+
+// 逆行列
+Matrix4x4 Inverse(const Matrix4x4& m);

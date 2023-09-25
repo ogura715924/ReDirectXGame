@@ -39,7 +39,13 @@ Vector3 Player::GetWorldPosition() {
 
 int Player::GetRadius() { return int(); }
 
-void Player::Initialize(Model* model, uint32_t textureHandle) {
+void Player::SetParent(const WorldTransform* parent) {
+	//親子関係を結ぶ
+	worldTransform_.parent_ = parent;
+
+}
+
+void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 PlayerPostion) {
 	// 引数から受け取ったモデルが組み込まれているかチェック
 	assert(model);
 	// 引数からモデルとテクスチャハンドルを受け取る
@@ -49,6 +55,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	// X,Y,Z方向のスケーリングを設定
 	/*worldTransform_.scale_ = {5.0f, 1.0f, 1.0f};
 	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};*/
+
+	worldTransform_.translation_ = PlayerPostion;
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();

@@ -12,6 +12,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <Skydome.h>
+#include <RailCamera.h>
 
 /// <summary>
 /// ゲームシーン
@@ -73,6 +74,9 @@ private: // メンバ変数
 	Enemy* enemy_ = nullptr;
 	//スカイドーム
 	Skydome* skydome_ = nullptr;
+	//	レールカメラ
+	RailCamera* railCamera_ = nullptr;
+
 
 	// テクスチャハンドル
 

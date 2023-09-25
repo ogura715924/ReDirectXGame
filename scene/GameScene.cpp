@@ -15,6 +15,7 @@ GameScene::~GameScene() {
 	delete player_;
 	delete enemy_;
 	delete modelSkydome_;
+	delete railCamera_;
 }
 
 void GameScene::Initialize() {
@@ -42,7 +43,10 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 	// 自キャラの初期化
-	player_->Initialize(model_, textureHandle_);
+	Vector3 playerPosition(0, 0, 10);
+	player_->Initialize(model_, textureHandle_,playerPosition);
+	
+	
 
 	//	敵キャラの生成
 	enemy_ = new Enemy();
@@ -66,6 +70,14 @@ void GameScene::Initialize() {
 	//viewProjection_.farZ = 0.1f;
 	viewProjection_.Initialize();
 	
+	// レールカメラの生成
+	railCamera_ = new RailCamera;
+	// レールカメラの初期化
+	railCamera_->Initialize({0, 0, 0}, {0, 0, 0});
+	// 自キャラとレールカメラの親子関係を結ぶ
+	player_->SetParent(&railCamera_->GetWorldTransform());
+
+
 }
 
 void GameScene::Update() {
@@ -99,6 +111,9 @@ void GameScene::Update() {
 	//スカイドーム
 	skydome_->Update();
 
+	//レールカメラ
+	railCamera_->Update();
+	
 }
 
 void GameScene::Draw() {
