@@ -4,6 +4,7 @@
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include <cassert>
+#include"EnemyBullet.h"
 
 
 GameScene::GameScene() {
@@ -16,6 +17,9 @@ GameScene::~GameScene() {
 	delete enemy_;
 	delete modelSkydome_;
 	delete railCamera_;
+	for (EnemyBullet* bullet : enemyBullets_) {
+		delete bullet;
+	}
 }
 
 void GameScene::Initialize() {
@@ -53,8 +57,11 @@ void GameScene::Initialize() {
 	// 敵キャラに自キャラのアドレスを渡す
 	enemy_->SetPlayer(player_);
 	// 敵キャラの初期化
-	Vector3 velocity(0.0f, 0.0f, 1.0f); // 速度を設定する
-	enemy_->Initialize(model_, velocity);
+	Vector3 position(0.0f, 0.0f, 1.0f); // 速度を設定する
+	enemy_->Initialize(model_, position);
+	//敵キャラにゲームシーンを渡す
+	enemy_->SetGameScene(this);
+
 
 	
 		// 3Dモデルの生成
@@ -113,7 +120,41 @@ void GameScene::Update() {
 
 	//レールカメラ
 	railCamera_->Update();
+
+
 	
+	
+}
+
+void GameScene::Fire() {
+	assert(player_);
+
+	// 弾の速度
+	const float kBulletSpeed = 1.0f;
+
+	// 自キャラのワールド座標を取得する
+	player_->GetWorldPosition();
+	// 敵キャラのワールド座標を取得する
+	GetWorldPosition();
+	// 敵キャラ->自キャラの差分ベクトルを求める
+	Vector3 DifferenceVector = {
+	    GetWorldPosition().x - player_->GetWorldPosition().x,
+	    GetWorldPosition().y - player_->GetWorldPosition().y,
+	    GetWorldPosition().z - player_->GetWorldPosition().z};
+	// ベクトルの正規化
+	// DifferenceVector = Normalize(DifferenceVector);
+	// ベクトルの長さを速さに合わせる
+	velocity_.x = DifferenceVector.x * kBulletSpeed;
+	velocity_.y = DifferenceVector.y * kBulletSpeed;
+	velocity_.z = DifferenceVector.z * kBulletSpeed;
+
+	// 弾を生成し初期化
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Intialize(model_, worldTransform_.translation_, velocity_);
+
+	// 引っ越した
+	//  弾を登録する
+	// bullets_.push_back(newBullet);
 }
 
 void GameScene::Draw() {
@@ -149,6 +190,13 @@ void GameScene::Draw() {
 	//スカイドームの描画
 	skydome_->Draw(viewProjection_);
 
+
+	//敵弾引っ越してきた
+	for (EnemyBullet* bullet : enemyBullets_) {
+		bullet->Draw(viewProjection_);
+	}
+
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -178,7 +226,7 @@ void GameScene::CheckAllCollisions() {
 	//自弾リストの取得
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 	// 敵弾リストの取得
-	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+	//const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
 
 	#pragma region 自キャラと敵弾の当たり判定
 
@@ -186,7 +234,7 @@ void GameScene::CheckAllCollisions() {
 	PosA = player_->GetWorldPosition();
 	RadiusA = player_->GetRadius();
 	//自キャラと敵弾全ての当たり判定
-	for (EnemyBullet* bullet : enemyBullets) {
+	for (EnemyBullet* bullet : enemyBullets_) {
 	//敵弾の座標
 		PosB = bullet->GetWorldPosition();
 		RadiusB = bullet->GetRadius();
@@ -234,7 +282,7 @@ void GameScene::CheckAllCollisions() {
 
 	// 自キャラと敵弾全ての当たり判定
 	for (PlayerBullet* bulletA : playerBullets) {
-		for (EnemyBullet* bulletB : enemyBullets) {
+		for (EnemyBullet* bulletB : enemyBullets_) {
 			// 自弾の座標
 			PosA = bulletA->GetWorldPosition();
 			RadiusA = bulletA->GetRadius();
@@ -281,5 +329,10 @@ void GameScene::CheckAllCollisions() {
 #pragma endregion
 
 	}
+
+void GameScene::AddEnemyBullet(EnemyBullet* enemyBullets) {
+//リストに登録する
+	    enemyBullets_.push_back(enemyBullets);
+}
 
 

@@ -13,6 +13,8 @@
 #include "WorldTransform.h"
 #include <Skydome.h>
 #include <RailCamera.h>
+#include<list>
+#include"EnemyBullet.h"
 
 /// <summary>
 /// ゲームシーン
@@ -40,6 +42,8 @@ public: // メンバ関数
 	/// </summary>
 	void Update();
 
+	// 攻撃
+	void Fire();
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -49,6 +53,8 @@ public: // メンバ関数
 	/// 衝突判定と応答
 	/// </summary>
 	void CheckAllCollisions();
+
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -77,6 +83,10 @@ private: // メンバ変数
 	//	レールカメラ
 	RailCamera* railCamera_ = nullptr;
 
+
+	//敵の引っ越しさせたやつたち
+	// 弾
+	std::list<EnemyBullet*> enemyBullets_;
 
 	// テクスチャハンドル
 
