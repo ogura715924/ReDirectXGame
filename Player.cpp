@@ -215,9 +215,10 @@ void Player::Update(const ViewProjection& viewProjection) {
 
 		  //クライアントエリア座標に変換する
 		  HWND hwnd = WinApp::GetInstance()->GetHwnd();
+		  ScreenToClient(hwnd, &mousePosition);
+
 		  // スプライトのレティクルに座標設定
 		   sprite2DReticle_->SetPosition(Vector2((float)mousePosition.x, (float)mousePosition.y));
-		  ScreenToClient(hwnd, &mousePosition);
 		  //マウス座標を2Dレティクルのスプライトに代入する
 		  Matrix4x4 matViewport =MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
 		  //ビュープロジェクションビューポート合成行列

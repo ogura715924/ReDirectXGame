@@ -27,7 +27,6 @@ public:
 	// 親となるワールド変換へのポインタ
 	const WorldTransform* parent_ = nullptr;
 
-	WorldTransform() = default;
 	~WorldTransform() = default;
 
 	/// <summary>

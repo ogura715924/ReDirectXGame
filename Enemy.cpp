@@ -64,7 +64,7 @@ void Enemy::Update() {
 		// 移動(ベクトルを加算)
 		worldTransform_.translation_.x += 0.1f;
 		// 既定の位置に到達したら離脱
-		if (worldTransform_.translation_.x > 2.0f) {
+		if (worldTransform_.translation_.x > 5.0f) {
 			phase_ = Phase::Leave;
 		}
 		break;

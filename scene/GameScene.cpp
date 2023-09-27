@@ -86,7 +86,7 @@ void GameScene::Initialize() {
 	// レールカメラの初期化
 	railCamera_->Initialize({0, 0, 0}, {0, 0, 0});
 	// 自キャラとレールカメラの親子関係を結ぶ
-	player_->SetParent(&railCamera_->GetWorldTransform());
+//	player_->SetParent(&railCamera_->GetWorldTransform());
 
 
 }
@@ -115,6 +115,10 @@ void GameScene::Update() {
 	player_->Rotate();
 	// 敵キャラの更新
 	enemy_->Update();
+	//敵弾
+	for (EnemyBullet* enemyBullet : enemyBullets_) {
+		enemyBullet->Update();
+	}
 	
 	// 当たり判定
 	CheckAllCollisions();
