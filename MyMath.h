@@ -30,3 +30,10 @@ Vector3 Normalize(const Vector3& v);
 
 // 逆行列
 Matrix4x4 Inverse(const Matrix4x4& m);
+
+// 3.ビューポート変換行列
+Matrix4x4 MakeViewportMatrix(
+    float left, float top, float width, float height, float minDepth, float maxDepth);
+
+// 座標変還
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);

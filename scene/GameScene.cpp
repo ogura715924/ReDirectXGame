@@ -39,6 +39,8 @@ void GameScene::Initialize() {
 
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
+	// レティクルのテクスチャ
+	TextureManager::Load("Reticle.png");
 	// 3Dモデルの生成
 	model_ = Model::Create();
 	// ビュープロジェクションの初期化
@@ -109,7 +111,7 @@ void GameScene::Update() {
 		viewProjection_.UpdateMatrix();
 	}
 	// 自キャラの更新
-	player_->Update();
+	player_->Update(viewProjection_);
 	player_->Rotate();
 	// 敵キャラの更新
 	enemy_->Update();
@@ -169,6 +171,8 @@ void GameScene::Draw() {
 	}
 
 
+
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -176,6 +180,7 @@ void GameScene::Draw() {
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
+	player_->DrawUI();
 
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる

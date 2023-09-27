@@ -3,6 +3,7 @@
 #include "PlayerBullet.h"
 #include "Vector3.h"
 #include <list>
+#include"Sprite.h"
 
 /// 自キャラ
 
@@ -11,7 +12,7 @@ public:
 	// 初期化
 	void Initialize(Model* model_, uint32_t textureHandle, Vector3 PlayerPostion);
 	// 更新
-	void Update();
+	void Update(const ViewProjection& viewProjection);
 	// 回転
 	void Rotate();
 	// 攻撃
@@ -24,6 +25,8 @@ public:
 	void Interval();
 	// 描画
 	void Draw(const ViewProjection& viewProjection_);
+	//UI描画
+	void DrawUI();
 
 	// 発射間隔
 	static const int kAttackInterval = 20;
@@ -53,5 +56,11 @@ private:
 	uint32_t textureHandle_ = 0u;
 	// 発射タイマー
 	int32_t AttackTimer = 0;
+
+	// 3Dレティクル用ワールドトランスフォーム
+	WorldTransform worldTransform3DReticle_;
+
+	// 2Dレティクル用スプライト
+	Sprite* sprite2DReticle_ = nullptr;
 
 };

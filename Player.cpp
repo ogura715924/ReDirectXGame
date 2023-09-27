@@ -5,6 +5,7 @@
 #include <imgui.h>
 #include <math.h>
 #include "MyMath.h"
+#include <WinApp.h>
 
 #define _USE_MATH_DEFINES
 
@@ -18,6 +19,9 @@ Player::~Player() {
 		// 範囲forで何をやっているか
 		// bullet = bullets_[i];をやっていてbullets_の数分だけループする
 		delete bullet;
+
+		//Sprite::Create()のところの解放
+		delete sprite2DReticle_;
 	}
 }
 
@@ -66,8 +70,18 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 PlayerPost
 
 	// 発射間隔初期化
 	Interval();
+
+	// 3Dレティクルのワールドトラベル初期化
+	worldTransform3DReticle_.Initialize();
+
+		// レティクル用テクスチャ取得
+	uint32_t textureReticle = TextureManager::Load("reticle.png");
+
+	// スプライト生成
+	sprite2DReticle_ =
+	    Sprite::Create(textureReticle, {500, 500}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 }
-void Player::Update() {
+void Player::Update(const ViewProjection& viewProjection) {
 
 	// キャラクターの移動ベクトル
 	Vector3 move = {0, 0, 0};
@@ -148,6 +162,55 @@ void Player::Update() {
 
 	// 行列を定数バッファに転送
 	worldTransform_.UpdateMatrix();
+
+	// 自機のワールド座標から3Dレティクルのワールド座標を計算
+	{
+		// 自機から3Dレティクルへの距離
+		const float kDistancePlayerTo3DReticle = 50.0f;
+		// 自機から3Dレティクルへのオフセット(Z+向き)
+		Vector3 offset = {0, 0, 1.0f};
+		// 自機のワールド行列の回転を反映
+		offset = TransformNormal(offset, worldTransform_.matWorld_);
+		// ベクトルの長さを整える
+		offset = Normalize(offset);
+		offset.x *= kDistancePlayerTo3DReticle;
+		offset.y *= kDistancePlayerTo3DReticle;
+		offset.z *= kDistancePlayerTo3DReticle;
+		// 3Dレティクルの座標を設定
+		worldTransform3DReticle_.translation_.x = GetWorldPosition().x + offset.x;
+		worldTransform3DReticle_.translation_.y = GetWorldPosition().y + offset.y;
+		worldTransform3DReticle_.translation_.z = GetWorldPosition().z + offset.z;
+
+		worldTransform3DReticle_.UpdateMatrix();
+	}
+
+
+	//3Dレティクルのワールド座標から2Dレティクルのスクリーン座標を計算
+	{
+		 //3Dレティクルのワールド行列から、ワールド座標を取得
+
+		 Vector3 positionReticle = GetWorldPosition();
+
+		 // ビューポート行列
+		  Matrix4x4 matViewport =
+		      MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+
+		 // ビュー行列とプロジェクション行列、ビューポート行列を合成する
+		  Matrix4x4 matViewProjectionViewport =
+		      Multiply(Multiply(viewProjection.matView, viewProjection.matProjection),
+		      matViewport);
+
+		 // ワールドスクリーン座標変換
+		  positionReticle = Transform(positionReticle, matViewProjectionViewport);
+
+		 // スプライトのレティクルに座標設定
+		  sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+	}
+
+
+
+
+
 }
 
 void Player::Rotate() {
@@ -177,6 +240,16 @@ void Player::Attack() {
 		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 		// 弾を登録する
 		bullets_.push_back(newBullet);
+
+		// 自機から照準オブジェクトへのベクトル
+		velocity.x = worldTransform3DReticle_.translation_.x - worldTransform_.translation_.x;
+		velocity.y = worldTransform3DReticle_.translation_.y - worldTransform_.translation_.y;
+		velocity.z = worldTransform3DReticle_.translation_.z - worldTransform_.translation_.z;
+
+		velocity = Normalize(velocity);
+		velocity.x *= kBulletSpeed;
+		velocity.y *= kBulletSpeed;
+		velocity.z *= kBulletSpeed;
 	}
 }
 
@@ -189,7 +262,19 @@ void Player::Draw(const ViewProjection& ViewProjection) {
 	// 3Dモデルを描画
 	model_->Draw(worldTransform_, ViewProjection, textureHandle_);
 
+	// 3Dレティクルを描画
+	model_->Draw(worldTransform3DReticle_, ViewProjection);
+
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(ViewProjection);
 	}
+
+	
 }
+
+void Player::DrawUI() {
+	// スプライト生成
+	sprite2DReticle_->Draw();
+}
+
+
