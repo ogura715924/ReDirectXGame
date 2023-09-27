@@ -82,17 +82,17 @@ void Enemy::Update() {
 	
 	// 弾関連
 
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Update();
-	}
-	// デスフラグの立った弾を削除
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
+	//for (EnemyBullet* bullet : bullets_) {
+	//	bullet->Update();
+	//}
+	//// デスフラグの立った弾を削除
+	//bullets_.remove_if([](EnemyBullet* bullet) {
+	//	if (bullet->IsDead()) {
+	//		delete bullet;
+	//		return true;
+	//	}
+	//	return false;
+	//});
 
 	// 発射タイマーカウントダウン
 	FireTimer--;
@@ -105,37 +105,38 @@ void Enemy::Update() {
 	}
 }
 
-//引っ越した
-//void Enemy::Fire() {
-//	assert(player_);
-//
-//	// 弾の速度
-//	const float kBulletSpeed = 1.0f;
-//
-//	// 自キャラのワールド座標を取得する
-//	player_->GetWorldPosition();
-//	// 敵キャラのワールド座標を取得する
-//	GetWorldPosition();
-//	// 敵キャラ->自キャラの差分ベクトルを求める
-//	Vector3 DifferenceVector = {
-//	    GetWorldPosition().x - player_->GetWorldPosition().x,
-//	    GetWorldPosition().y - player_->GetWorldPosition().y,
-//	    GetWorldPosition().z - player_->GetWorldPosition().z};
-//	// ベクトルの正規化
-//	//DifferenceVector = Normalize(DifferenceVector);
-//	// ベクトルの長さを速さに合わせる
-//	velocity_.x = DifferenceVector.x * kBulletSpeed;
-//	velocity_.y = DifferenceVector.y * kBulletSpeed;
-//	velocity_.z = DifferenceVector.z * kBulletSpeed;
-//
-//	// 弾を生成し初期化
-//	EnemyBullet* newBullet = new EnemyBullet();
-//	newBullet->Intialize(model_, worldTransform_.translation_, velocity_);
-//
-//	//引っ越した
-//	// 弾を登録する
-//	//bullets_.push_back(newBullet);
-//}
+void Enemy::Fire() {
+	assert(player_);
+
+	// 弾の速度
+	const float kBulletSpeed = 1.0f;
+
+	// 自キャラのワールド座標を取得する
+	player_->GetWorldPosition();
+	// 敵キャラのワールド座標を取得する
+	GetWorldPosition();
+	// 敵キャラ->自キャラの差分ベクトルを求める
+	Vector3 DifferenceVector = {
+	    GetWorldPosition().x - player_->GetWorldPosition().x,
+	    GetWorldPosition().y - player_->GetWorldPosition().y,
+	    GetWorldPosition().z - player_->GetWorldPosition().z};
+	// ベクトルの正規化
+	//DifferenceVector = Normalize(DifferenceVector);
+	// ベクトルの長さを速さに合わせる
+	velocity_.x = DifferenceVector.x * kBulletSpeed;
+	velocity_.y = DifferenceVector.y * kBulletSpeed;
+	velocity_.z = DifferenceVector.z * kBulletSpeed;
+
+	// 弾を生成し初期化
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Intialize(model_, worldTransform_.translation_, velocity_);
+
+	// 弾を登録する
+	gameScene_->AddEnemyBullet(newBullet);
+
+	// 引っ越した
+	//bullets_.push_back(newBullet);
+}
 
 void Enemy::OnCollision() {
 //何もしない

@@ -21,7 +21,7 @@ public:
 	void Draw(const ViewProjection& viewProjection_);
 	//引っ越した
 	//// 攻撃
-	//void Fire();
+	void Fire();
 	// 衝突を検知したら呼び出されるコールバック関数
 	void OnCollision();
 	// 接近フェーズの初期化

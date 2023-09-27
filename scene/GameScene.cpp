@@ -5,6 +5,8 @@
 #include "TextureManager.h"
 #include <cassert>
 #include"EnemyBullet.h"
+#include <MyMath.h>
+#include<fstream>
 
 
 GameScene::GameScene() {
@@ -126,36 +128,6 @@ void GameScene::Update() {
 	
 }
 
-void GameScene::Fire() {
-	assert(player_);
-
-	// 弾の速度
-	const float kBulletSpeed = 1.0f;
-
-	// 自キャラのワールド座標を取得する
-	player_->GetWorldPosition();
-	// 敵キャラのワールド座標を取得する
-	GetWorldPosition();
-	// 敵キャラ->自キャラの差分ベクトルを求める
-	Vector3 DifferenceVector = {
-	    GetWorldPosition().x - player_->GetWorldPosition().x,
-	    GetWorldPosition().y - player_->GetWorldPosition().y,
-	    GetWorldPosition().z - player_->GetWorldPosition().z};
-	// ベクトルの正規化
-	// DifferenceVector = Normalize(DifferenceVector);
-	// ベクトルの長さを速さに合わせる
-	velocity_.x = DifferenceVector.x * kBulletSpeed;
-	velocity_.y = DifferenceVector.y * kBulletSpeed;
-	velocity_.z = DifferenceVector.z * kBulletSpeed;
-
-	// 弾を生成し初期化
-	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Intialize(model_, worldTransform_.translation_, velocity_);
-
-	// 引っ越した
-	//  弾を登録する
-	// bullets_.push_back(newBullet);
-}
 
 void GameScene::Draw() {
 
@@ -329,6 +301,96 @@ void GameScene::CheckAllCollisions() {
 #pragma endregion
 
 	}
+
+void GameScene::LoadEnemyPopData() {
+
+	// ファイルを開く
+	std::ifstream file;
+	file.open("enemyPop.csv");
+	assert(file.is_open());
+
+	// ファイルの内容を文字列ストリームコピーにコピー
+	enemyPopCommands << file.rdbuf();
+
+	// ファイルを閉じる
+	file.close();
+
+}
+
+void GameScene::UpdateEnemyPopCommands() {
+
+	// 待機処理
+	if (isWait_) {
+		    waitTime_--;
+		    if (waitTime_ <= 0) {
+			// 待機完了
+			isWait_ = false;
+		    }
+		    return;
+	}
+
+	//1行分の文字列を入れる変数
+	    std::string line;
+
+		//コマンド実行ループ
+	    while (getline(enemyPopCommands, line)) {
+		    // 1行分の文字列をストリームに変婚して解析しやすくする
+		    std::istringstream line_stream(line);
+
+		    std::string word;
+		    // ,区切りで行の先頭文字列を取得
+		    getline(line_stream, word, ',');
+
+		    // "//"から始まる行はコメント
+		    if (word.find("//") == 0) {
+			// コメント行を飛ばす
+			continue;
+		    }
+		    // POPコマンド
+		    if (word.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			// y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			// z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			// 敵を発生させる
+			SpawnEnemy({x, y, z});
+
+		    }
+		    // WAITコマンド
+		    else if (word.find("WAIT") == 0) {
+			getline(line_stream, word, ',');
+
+			// 待ち時間
+			int32_t waitTime = atoi(word.c_str());
+			// 待機開始
+			 isWait_ = true;
+			waitTime_ = waitTime;
+
+			// コマンドループを抜ける
+			break;
+		    }
+	    }
+
+}
+
+void GameScene::SpawnEnemy(Vector3 pos) {
+
+	Enemy* enemy = new Enemy();
+	    // 自機の位置をもらう
+	    enemy->SetPlayer(player_);
+	    // 初期化
+	   enemy_->Initialize(model_, pos);
+	    enemy->SetGameScene(this);
+	  
+}
 
 void GameScene::AddEnemyBullet(EnemyBullet* enemyBullets) {
 //リストに登録する

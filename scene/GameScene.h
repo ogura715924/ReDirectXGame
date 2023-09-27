@@ -15,6 +15,7 @@
 #include <RailCamera.h>
 #include<list>
 #include"EnemyBullet.h"
+#include<sstream>
 
 /// <summary>
 /// ゲームシーン
@@ -54,6 +55,19 @@ public: // メンバ関数
 	/// </summary>
 	void CheckAllCollisions();
 
+	//敵発生データの読み込み
+	void LoadEnemyPopData();
+
+	//敵発生コマンドの更新
+	void UpdateEnemyPopCommands();
+
+	/// 敵の発生処理
+	void SpawnEnemy(Vector3 pos);
+
+	/// <summary>
+	/// エネミーが発射した弾を登録する関数
+	/// </summary>
+	/// <param name="enemyBullet"></param>
 	void AddEnemyBullet(EnemyBullet* enemyBullet);
 
 private: // メンバ変数
@@ -83,6 +97,13 @@ private: // メンバ変数
 	//	レールカメラ
 	RailCamera* railCamera_ = nullptr;
 
+	//敵発生コマンド
+	std::stringstream enemyPopCommands;
+
+		// 敵が発生待機中か
+	bool isWait_ = false;
+	// 敵が発生するまでの時間
+	int32_t waitTime_ = 0;
 
 	//敵の引っ越しさせたやつたち
 	// 弾
