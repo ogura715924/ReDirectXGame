@@ -13,6 +13,8 @@ void EnemyBullet::Intialize(Model* model, const Vector3& position, const Vector3
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 
+
+
 	// 引数で受け取った初期座標をセット
 	worldTransform_.translation_ = position;
 
