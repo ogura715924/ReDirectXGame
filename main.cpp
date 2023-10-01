@@ -6,6 +6,9 @@
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include "WinApp.h"
+#include <TitleScene.h>
+#include <Clera.h>
+#include <Over.h>
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -17,6 +20,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	AxisIndicator* axisIndicator = nullptr;
 	PrimitiveDrawer* primitiveDrawer = nullptr;
 	GameScene* gameScene = nullptr;
+	TitleScene* titleScene = nullptr;
+	Clera* clera = nullptr;
+	Over* over = nullptr;
+
+	// キーボード入力
+	Input* input_ = nullptr;
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
@@ -60,6 +69,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
 	gameScene->Initialize();
+	// タイトルシーンの初期化
+	titleScene = new TitleScene();
+	titleScene->Initialize();
+
+	SceneType sceneNo = SceneType::kTitle;
 
 	// メインループ
 	while (true) {
@@ -72,8 +86,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imguiManager->Begin();
 		// 入力関連の毎フレーム処理
 		input->Update();
-		// ゲームシーンの毎フレーム処理
-		gameScene->Update();
+
+		switch (sceneNo) {
+
+
+		case SceneType::kTitle:
+			
+			titleScene->Update();
+			titleScene->Draw();
+
+			break;
+
+		case SceneType::kGaamePlay:
+			// ゲームシーンの毎フレーム処理
+			gameScene->Update();
+			gameScene->Draw();
+
+			break;
+
+		case SceneType::kClera:
+			clera->Update();
+			clera->Draw();
+			break;
+
+		case SceneType::kOver:
+			over->Update();
+			over->Draw();
+			break;
+
+		}
 		// 軸表示の更新
 		axisIndicator->Update();
 		// ImGui受付終了
@@ -81,8 +122,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// 描画開始
 		dxCommon->PreDraw();
-		// ゲームシーンの描画
-		gameScene->Draw();
+		switch (sceneNo) {
+		case SceneType::kTitle:
+			// ゲームシーンの描画
+			gameScene->Draw();
+
+			break;
+		}
+
 		// 軸表示の描画
 		axisIndicator->Draw();
 		// プリミティブ描画のリセット

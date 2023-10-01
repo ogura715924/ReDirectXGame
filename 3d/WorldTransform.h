@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Matrix4x4.h"
 #include "Vector3.h"
 #include <d3d12.h>
@@ -27,6 +26,7 @@ public:
 	// 親となるワールド変換へのポインタ
 	const WorldTransform* parent_ = nullptr;
 
+	WorldTransform() = default;
 	~WorldTransform() = default;
 
 	/// <summary>

@@ -6,6 +6,7 @@
 #include <math.h>
 #include "MyMath.h"
 #include <WinApp.h>
+#include"Enemy.h"
 
 #define _USE_MATH_DEFINES
 
@@ -286,26 +287,51 @@ void Player::Attack() {
 	if (input_->PushKey(DIK_SPACE) && AttackTimer <= 0) {
 
 		// 弾の速度
-		const float kBulletSpeed = 1.0f;
+		const float kBulletSpeed = 3.5f;
 		Vector3 velocity(0, 0, kBulletSpeed);
 
-		// 速度ベクトルを自機の向きに合わせて回転させる
-		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
+
+
+		// 自キャラのワールド座標を取得する
+		Vector3 enemyWorldPos = enemy_->GetWorldPosition();
+		// 敵キャラのワールド座標を取得する
+		Vector3 playerWorldPos = GetWorldPosition();
+		// 敵キャラ->自キャラの差分ベクトルを求める
+		Vector3 DifferenceVector = {
+		    enemyWorldPos.x - playerWorldPos.x,
+		    enemyWorldPos.y - playerWorldPos.y,
+		    enemyWorldPos.z - playerWorldPos.z,
+		};
+		// ベクトルの正規化
+		DifferenceVector = Normalize(DifferenceVector);
+		// ベクトルの長さを速さに合わせる
+		velocity = {
+		    velocity_.x = DifferenceVector.x * kBulletSpeed,
+		    velocity_.y = DifferenceVector.y * kBulletSpeed,
+		    velocity_.z = DifferenceVector.z * kBulletSpeed,
+		};
+
+		//弾を生成し初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 		// 弾を登録する
 		bullets_.push_back(newBullet);
 
-		// 自機から照準オブジェクトへのベクトル
-		velocity.x = worldTransform3DReticle_.translation_.x - worldTransform_.translation_.x;
-		velocity.y = worldTransform3DReticle_.translation_.y - worldTransform_.translation_.y;
-		velocity.z = worldTransform3DReticle_.translation_.z - worldTransform_.translation_.z;
+		//// 速度ベクトルを自機の向きに合わせて回転させる
+		//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
-		velocity = Normalize(velocity);
-		velocity.x *= kBulletSpeed;
-		velocity.y *= kBulletSpeed;
-		velocity.z *= kBulletSpeed;
+		//// 自機から照準オブジェクトへのベクトル
+		//velocity.x = worldTransform3DReticle_.translation_.x - worldTransform_.translation_.x;
+		//velocity.y = worldTransform3DReticle_.translation_.y - worldTransform_.translation_.y;
+		//velocity.z = worldTransform3DReticle_.translation_.z - worldTransform_.translation_.z;
+
+		//velocity = Normalize(velocity);
+		//velocity.x *= kBulletSpeed;
+		//velocity.y *= kBulletSpeed;
+		//velocity.z *= kBulletSpeed;
+
+
 	}
 }
 

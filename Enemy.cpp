@@ -3,10 +3,10 @@
 #include <assert.h>
 #include <cassert>
 #include"GameScene.h"
+#include <MyMath.h>
 
-//#include "Normalize.h"
 
-//#include "MyMath.h"
+Enemy::Enemy() {}
 
 // デストラクタ
 Enemy::~Enemy() {
@@ -49,33 +49,38 @@ void Enemy::Initialize(Model* model, const Vector3& velocity) {
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 
-	worldTransform_.translation_.z = 3.0f;
+	worldTransform_.translation_ = {-5, -5, 30.5f};
+	
+	envelocity_.x = 0.1f;
+	envelocity_.y = 0.1f;
 }
 
 void Enemy::Update() {
-
-	// 座標を移動させる
-	// worldTransform_.translation_.z -= 0.1f;
 
 	// フェーズ
 	switch (phase_) {
 	case Phase::Approach:
 	default:
 		// 移動(ベクトルを加算)
-		worldTransform_.translation_.x += 0.1f;
+		worldTransform_.translation_.z+=envelocity_.z ;
 		// 既定の位置に到達したら離脱
-		if (worldTransform_.translation_.x > 5.0f) {
+		if (worldTransform_.translation_.x <= 0.0f) {
 			phase_ = Phase::Leave;
 		}
 		break;
 	case Phase::Leave:
 		// 移動（ベクトルを加算）
-		// worldTransform_.translation_.x += 0.1f;
-		//ここあとで変える
-		worldTransform_.translation_.z -= 0.1f;
-		break;
-	}
 
+		// 移動（ベクトルを加算）
+		worldTransform_.translation_.x += envelocity_.x;
+		worldTransform_.translation_.y += envelocity_.y;
+		if (worldTransform_.translation_.x >= 35.0f || worldTransform_.translation_.x <= -35.0f) {
+			envelocity_.x *= -1;
+		}
+		if (worldTransform_.translation_.y >= 20.0f || worldTransform_.translation_.y <= -20.0f) {
+			envelocity_.y *= -1;
+		}
+	}
 
 	// ワールドトランスフォームの更新　場所動かすときに使える
 	worldTransform_.UpdateMatrix();
@@ -110,26 +115,31 @@ void Enemy::Fire() {
 
 	// 弾の速度
 	const float kBulletSpeed = 1.0f;
+	Vector3 velocity(0, 0, kBulletSpeed);
+
 
 	// 自キャラのワールド座標を取得する
-	player_->GetWorldPosition();
+	Vector3 playerWorldPos = player_->GetWorldPosition();
 	// 敵キャラのワールド座標を取得する
-	GetWorldPosition();
+	Vector3 enemyWorldPos = GetWorldPosition();
 	// 敵キャラ->自キャラの差分ベクトルを求める
 	Vector3 DifferenceVector = {
-	    GetWorldPosition().x - player_->GetWorldPosition().x,
-	    GetWorldPosition().y - player_->GetWorldPosition().y,
-	    GetWorldPosition().z - player_->GetWorldPosition().z};
+	    enemyWorldPos.x - playerWorldPos.x,
+	    enemyWorldPos.y - playerWorldPos.y,
+	    enemyWorldPos.z - playerWorldPos.z,
+	};
 	// ベクトルの正規化
-	//DifferenceVector = Normalize(DifferenceVector);
+	DifferenceVector = Normalize(DifferenceVector);
 	// ベクトルの長さを速さに合わせる
-	velocity_.x = DifferenceVector.x * kBulletSpeed;
-	velocity_.y = DifferenceVector.y * kBulletSpeed;
-	velocity_.z = DifferenceVector.z * kBulletSpeed;
+	velocity = {
+	    velocity_.x = DifferenceVector.x * kBulletSpeed,
+	    velocity_.y = DifferenceVector.y * kBulletSpeed,
+	    velocity_.z = DifferenceVector.z * kBulletSpeed,
+	};
 
 	// 弾を生成し初期化
 	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Intialize(model_, worldTransform_.translation_, velocity_);
+	newBullet->Intialize(model_, worldTransform_.translation_, velocity);
 
 	// 弾を登録する
 	gameScene_->AddEnemyBullet(newBullet);

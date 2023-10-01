@@ -11,6 +11,7 @@ class GameScene;
 
 class Enemy {
 public:
+	Enemy();
 	// デストラクタ
 	~Enemy();
 	// 初期化
@@ -51,13 +52,15 @@ private:
 	};
 
 	// ワールド変換データ
-	WorldTransform worldTransform_;
+	WorldTransform worldTransform_ ;
 	// モデル
 	Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 	// 速度
-	Vector3 velocity_ = {0,0,0};
+	Vector3 velocity_ = {0.1f,0.1f,0.1f};
+	// 速度
+	Vector3 envelocity_ = {0.1f, 0.1f, 0.1f};
 
 	// フェーズ　
 	Phase phase_;

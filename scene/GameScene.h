@@ -4,6 +4,7 @@
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Enemy.h"
+#include "EnemyBullet.h"
 #include "Input.h"
 #include "Model.h"
 #include "Player.h"
@@ -11,11 +12,11 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include <Skydome.h>
 #include <RailCamera.h>
-#include<list>
-#include"EnemyBullet.h"
-#include<sstream>
+#include <Skydome.h>
+#include <list>
+#include <sstream>
+#include "Scene.h"
 
 /// <summary>
 /// ゲームシーン
@@ -55,10 +56,10 @@ public: // メンバ関数
 	/// </summary>
 	void CheckAllCollisions();
 
-	//敵発生データの読み込み
+	// 敵発生データの読み込み
 	void LoadEnemyPopData();
 
-	//敵発生コマンドの更新
+	// 敵発生コマンドの更新
 	void UpdateEnemyPopCommands();
 
 	/// 敵の発生処理
@@ -70,6 +71,11 @@ public: // メンバ関数
 	/// <param name="enemyBullet"></param>
 	void AddEnemyBullet(EnemyBullet* enemyBullet);
 
+	
+	SceneType NextScene() { return SceneType::kTitle; };
+	bool IsSceneEnd() { return isSceneEnd; }
+
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -78,7 +84,7 @@ private: // メンバ変数
 	uint32_t texHandle_ = 0u;
 	// モデル
 	Model* model_ = nullptr;
-	//3Dモデル スカイドーム
+	// 3Dモデル スカイドーム
 	Model* modelSkydome_ = nullptr;
 	// デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
@@ -86,27 +92,29 @@ private: // メンバ変数
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
 
+	bool isSceneEnd = false;
+
 	// カメラ
 	ViewProjection viewProjection_;
 	// 自キャラ
 	Player* player_ = nullptr;
 	// 敵キャラ
 	Enemy* enemy_ = nullptr;
-	//スカイドーム
+	// スカイドーム
 	Skydome* skydome_ = nullptr;
 	//	レールカメラ
 	RailCamera* railCamera_ = nullptr;
 
-	//敵発生コマンド
+	// 敵発生コマンド
 	std::stringstream enemyPopCommands;
 
-		// 敵が発生待機中か
+	// 敵が発生待機中か
 	bool isWait_ = false;
 	// 敵が発生するまでの時間
 	int32_t waitTime_ = 0;
 
-	//敵の引っ越しさせたやつたち
-	// 弾
+	// 敵の引っ越しさせたやつたち
+	//  弾
 	std::list<EnemyBullet*> enemyBullets_;
 
 	// テクスチャハンドル

@@ -5,7 +5,7 @@
 #include "TextureManager.h"
 #include <cassert>
 #include"EnemyBullet.h"
-#include <MyMath.h>
+#include "MyMath.h"
 #include<fstream>
 
 
@@ -51,7 +51,7 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 	// 自キャラの初期化
-	Vector3 playerPosition(0, 0, 10);
+	Vector3 playerPosition(0, 0, -15.0f);
 	player_->Initialize(model_, textureHandle_,playerPosition);
 	
 	
@@ -60,6 +60,8 @@ void GameScene::Initialize() {
 	enemy_ = new Enemy();
 	// 敵キャラに自キャラのアドレスを渡す
 	enemy_->SetPlayer(player_);
+	// 自キャラに敵キャラのアドレスを渡す
+	player_->SetPlayer(enemy_);
 	// 敵キャラの初期化
 	Vector3 position(0.0f, 0.0f, 1.0f); // 速度を設定する
 	enemy_->Initialize(model_, position);
@@ -84,9 +86,9 @@ void GameScene::Initialize() {
 	// レールカメラの生成
 	railCamera_ = new RailCamera;
 	// レールカメラの初期化
-	railCamera_->Initialize({0, 0, 0}, {0, 0, 0});
+	railCamera_->Initialize({0, 0, -20}, {0, 0, 0});
 	// 自キャラとレールカメラの親子関係を結ぶ
-//	player_->SetParent(&railCamera_->GetWorldTransform());
+	//player_->SetParent(&railCamera_->GetWorldTransform());
 
 
 }
@@ -405,5 +407,7 @@ void GameScene::AddEnemyBullet(EnemyBullet* enemyBullets) {
 //リストに登録する
 	    enemyBullets_.push_back(enemyBullets);
 }
+
+
 
 

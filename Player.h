@@ -5,6 +5,10 @@
 #include <list>
 #include"Sprite.h"
 
+//敵クラスの前方宣言
+class Enemy;
+
+
 /// 自キャラ
 
 class Player {
@@ -27,6 +31,9 @@ public:
 	void Draw(const ViewProjection& viewProjection_);
 	//UI描画
 	void DrawUI();
+
+	// setterの利用
+	void SetPlayer(Enemy* enemy) { enemy_ = enemy; }
 
 	// 発射間隔
 	static const int kAttackInterval = 20;
@@ -63,4 +70,10 @@ private:
 	// 2Dレティクル用スプライト
 	Sprite* sprite2DReticle_ = nullptr;
 
+	// 敵キャラ
+	Enemy* enemy_ = nullptr;
+	// 弾速度
+	Vector3 velocity_ = {0.1f, 0.1f, 0.1f};
+
+	
 };
