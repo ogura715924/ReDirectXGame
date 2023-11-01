@@ -19,10 +19,12 @@ GameScene::~GameScene() {
 	delete enemy_;
 	delete modelSkydome_;
 	delete railCamera_;
+	delete model_;
 	delete skydome_;
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
 	}
+	enemyBullets_.clear();
 }
 
 void GameScene::Initialize() {
@@ -52,7 +54,7 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 	// 自キャラの初期化
-	Vector3 playerPosition(0, 0, 10);
+	Vector3 playerPosition(0, 0, -10);
 	player_->Initialize(model_, textureHandle_,playerPosition);
 	
 	

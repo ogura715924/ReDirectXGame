@@ -10,8 +10,8 @@ void RailCamera::Initialize(Vector3 pos, Vector3 rotation) {
 	worldTransform_.translation_.z = pos.z;
 
 	worldTransform_.rotation_.x = rotation.x;
-	worldTransform_.rotation_.x = rotation.y;
-	worldTransform_.rotation_.x = rotation.z;
+	worldTransform_.rotation_.y = rotation.y;
+	worldTransform_.rotation_.z = rotation.z;
 
 	//ビュープロジェクションの初期化
 	//viewProjection_.farZ = 0.1f;
@@ -21,7 +21,7 @@ void RailCamera::Initialize(Vector3 pos, Vector3 rotation) {
 void RailCamera::Update() {
 
 //ワールドトランスフォーム座標の数値を加算したりする(移動)
-	worldTransform_.translation_.z += 0.1f;
+	//worldTransform_.translation_.z += 0.1f;
 
 	//ワールドトランスフォームの角度の数値を加算したりする(回転)
 	worldTransform_.matWorld_ = MakeAffineMatrix(

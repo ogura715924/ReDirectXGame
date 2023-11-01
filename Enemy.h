@@ -50,6 +50,8 @@ private:
 		Leave,    // 離脱する
 	};
 
+
+
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// モデル
@@ -64,7 +66,7 @@ private:
 	// 弾
 	EnemyBullet* bullet_ = nullptr;
 	//引っ越した
-	//std::list<EnemyBullet*> bullets_;
+	std::list<EnemyBullet*> bullets_;
 
 	// 発射タイマー
 	int32_t FireTimer = 0;
@@ -75,5 +77,6 @@ private:
 	//ゲームシーン
 	GameScene* gameScene_ = nullptr;
 
-	
+	//スピード
+	Vector3 Speed = {0.1f, 0.1f, 0};
 };

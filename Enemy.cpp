@@ -58,41 +58,50 @@ void Enemy::Update() {
 	// worldTransform_.translation_.z -= 0.1f;
 
 	// フェーズ
-	switch (phase_) {
-	case Phase::Approach:
-	default:
-		// 移動(ベクトルを加算)
-		worldTransform_.translation_.x += 0.1f;
-		// 既定の位置に到達したら離脱
-		if (worldTransform_.translation_.x > 2.0f) {
-			phase_ = Phase::Leave;
-		}
-		break;
-	case Phase::Leave:
-		// 移動（ベクトルを加算）
-		// worldTransform_.translation_.x += 0.1f;
-		//ここあとで変える
-		worldTransform_.translation_.z -= 0.1f;
-		break;
-	}
+	//switch (phase_) {
+	//case Phase::Approach:
+	//default:
+	//	// 移動(ベクトルを加算)
+	//	worldTransform_.translation_.x += 0.1f;
+	//	// 既定の位置に到達したら離脱
+	//	if (worldTransform_.translation_.x > 2.0f) {
+	//		phase_ = Phase::Leave;
+	//	}
+	//	break;
+	//case Phase::Leave:
+	//	// 移動（ベクトルを加算）
+	//	// worldTransform_.translation_.x += 0.1f;
+	//	//ここあとで変える
+	//	worldTransform_.translation_.z -= 0.1f;
+	//	break;
+	//}
 
+	worldTransform_.translation_.x += Speed.x;
+	worldTransform_.translation_.y += Speed.y;
+
+	if (worldTransform_.translation_.x <= -38|| worldTransform_.translation_.x >= 38) {
+		Speed.x *= -1;
+	}
+	if (worldTransform_.translation_.y <= -21 || worldTransform_.translation_.y >= 21) {
+		Speed.y *= -1;
+	}
 
 	// ワールドトランスフォームの更新　場所動かすときに使える
 	worldTransform_.UpdateMatrix();
 	
 	// 弾関連
 
-	//for (EnemyBullet* bullet : bullets_) {
-	//	bullet->Update();
-	//}
-	//// デスフラグの立った弾を削除
-	//bullets_.remove_if([](EnemyBullet* bullet) {
-	//	if (bullet->IsDead()) {
-	//		delete bullet;
-	//		return true;
-	//	}
-	//	return false;
-	//});
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Update();
+	}
+	// デスフラグの立った弾を削除
+	bullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
 
 	// 発射タイマーカウントダウン
 	FireTimer--;

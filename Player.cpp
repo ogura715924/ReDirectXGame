@@ -79,8 +79,10 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 PlayerPost
 
 	// スプライト生成
 	sprite2DReticle_ =
-	    Sprite::Create(textureReticle, {500, 500}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	    Sprite::Create(textureReticle, {0, 0}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 }
+
+
 void Player::Update(const ViewProjection& viewProjection) {
 
 	// キャラクターの移動ベクトル
@@ -115,19 +117,13 @@ void Player::Update(const ViewProjection& viewProjection) {
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
-	// worldTransform_.translation_.x = sqrt(move.x * move.x + move.y * move.y);
-	// worldTransform_.translation_.y = sqrt(move.x * move.x + move.y * move.y);
-	// worldTransform_.translation_.z = sqrt(move.x * move.x + move.y * move.y);
-
+	
 	// 行列更新
-	/*worldTransform_.matWorld_ = MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-
-	worldTransform_.TransferMatrix();*/
+	
 	worldTransform_.UpdateMatrix();
 
 	// キャラクターの座標を画面表示する処理
-	ImGui::Begin("Debug");
+	/*ImGui::Begin("Debug");
 	float playerpos[] = {
 	    worldTransform_.translation_.x, worldTransform_.translation_.y,
 	    worldTransform_.translation_.z};
@@ -136,7 +132,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 	worldTransform_.translation_.y = playerpos[1];
 	worldTransform_.translation_.z = playerpos[2];
 
-	ImGui::End();
+	ImGui::End();*/
 
 	// キャラクター弾攻撃処理
 	Attack();
@@ -164,48 +160,48 @@ void Player::Update(const ViewProjection& viewProjection) {
 	worldTransform_.UpdateMatrix();
 
 	// 自機のワールド座標から3Dレティクルのワールド座標を計算
-	//{
-	//	// 自機から3Dレティクルへの距離
-	//	const float kDistancePlayerTo3DReticle = 50.0f;
-	//	// 自機から3Dレティクルへのオフセット(Z+向き)
-	//	Vector3 offset = {0, 0, 1.0f};
-	//	// 自機のワールド行列の回転を反映
-	//	offset = TransformNormal(offset, worldTransform_.matWorld_);
-	//	// ベクトルの長さを整える
-	//	offset = Normalize(offset);
-	//	offset.x *= kDistancePlayerTo3DReticle;
-	//	offset.y *= kDistancePlayerTo3DReticle;
-	//	offset.z *= kDistancePlayerTo3DReticle;
-	//	// 3Dレティクルの座標を設定
-	//	worldTransform3DReticle_.translation_.x = GetWorldPosition().x + offset.x;
-	//	worldTransform3DReticle_.translation_.y = GetWorldPosition().y + offset.y;
-	//	worldTransform3DReticle_.translation_.z = GetWorldPosition().z + offset.z;
+	{
+		// 自機から3Dレティクルへの距離
+		const float kDistancePlayerTo3DReticle = 0.0f;
+		// 自機から3Dレティクルへのオフセット(Z+向き)
+		Vector3 offset = {0, 0, 1.0f};
+		// 自機のワールド行列の回転を反映
+		offset = TransformNormal(offset, worldTransform_.matWorld_);
+		// ベクトルの長さを整える
+		offset = Normalize(offset);
+		offset.x *= kDistancePlayerTo3DReticle;
+		offset.y *= kDistancePlayerTo3DReticle;
+		offset.z *= kDistancePlayerTo3DReticle;
+		// 3Dレティクルの座標を設定
+		worldTransform3DReticle_.translation_.x = GetWorldPosition().x + offset.x;
+		worldTransform3DReticle_.translation_.y = GetWorldPosition().y + offset.y;
+		worldTransform3DReticle_.translation_.z = GetWorldPosition().z + offset.z;
 
-	//	worldTransform3DReticle_.UpdateMatrix();
-	//}
+		worldTransform3DReticle_.UpdateMatrix();
+	}
 
 
-	////3Dレティクルのワールド座標から2Dレティクルのスクリーン座標を計算
-	//{
-	//	 //3Dレティクルのワールド行列から、ワールド座標を取得
+	//3Dレティクルのワールド座標から2Dレティクルのスクリーン座標を計算
+	{
+		 //3Dレティクルのワールド行列から、ワールド座標を取得
 
-	//	 Vector3 positionReticle = GetWorldPosition();
+		 Vector3 positionReticle = GetWorldPosition();
 
-	//	 // ビューポート行列
-	//	  Matrix4x4 matViewport =
-	//	      MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+		 // ビューポート行列
+		  Matrix4x4 matViewport =
+		      MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
 
-	//	 // ビュー行列とプロジェクション行列、ビューポート行列を合成する
-	//	  Matrix4x4 matViewProjectionViewport =
-	//	      Multiply(Multiply(viewProjection.matView, viewProjection.matProjection),
-	//	      matViewport);
+		 // ビュー行列とプロジェクション行列、ビューポート行列を合成する
+		  Matrix4x4 matViewProjectionViewport =
+		      Multiply(Multiply(viewProjection.matView, viewProjection.matProjection),
+		      matViewport);
 
-	//	 // ワールドスクリーン座標変換
-	//	  positionReticle = Transform(positionReticle, matViewProjectionViewport);
+		 // ワールドスクリーン座標変換
+		  positionReticle = Transform(positionReticle, matViewProjectionViewport);
 
-	//	 // スプライトのレティクルに座標設定
-	//	  sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
-	//}
+		 // スプライトのレティクルに座標設定
+		  sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+	}
 
 
 	//マウスカーソルのスクリーン座標からワールド座標を取得して3Dレティクル配置
@@ -242,7 +238,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 		  mouseDirection = Normalize(mouseDirection);
 
 		  // カメラから照準オブジェクトの距離
-		  const float kDistanceTestObject = 100.0f;
+		  const float kDistanceTestObject = 50.0f;
 		  worldTransform3DReticle_.translation_.x =
 		      (mouseDirection.x * kDistanceTestObject) + posNear.x;
 		  worldTransform3DReticle_.translation_.y =
@@ -253,18 +249,18 @@ void Player::Update(const ViewProjection& viewProjection) {
 		  worldTransform3DReticle_.UpdateMatrix();
 			
 
-		  ImGui::Begin("Player");
-		   ImGui::Text("2DReticle:(%f,%f)", mousePosition.x, mousePosition.y);
-		   ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y);
-		   ImGui::Text("Far:(%+.2f,%+.2f,%+.2f)", posFar.x, posFar.y);
-		   ImGui::Text(
-		       "3DReticle:(%+.2f,%+.2f,%+.2f)", worldTransform3DReticle_.translation_.x,
-		       worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
+		  //ImGui::Begin("Player");
+		  // ImGui::Text("2DReticle:(%f,%f)", mousePosition.x, mousePosition.y);
+		  // ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y);
+		  // ImGui::Text("Far:(%+.2f,%+.2f,%+.2f)", posFar.x, posFar.y);
+		  // ImGui::Text(
+		  //     "3DReticle:(%+.2f,%+.2f,%+.2f)", worldTransform3DReticle_.translation_.x,
+		  //     worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
 
-		   ImGui::Text(
-		       " player : (%+.2f,%+.2f,%+.2f)", worldTransform_.translation_.x,
-		       worldTransform_.translation_.y, worldTransform_.translation_.z);
-		   ImGui::End();
+		  // ImGui::Text(
+		  //     " player : (%+.2f,%+.2f,%+.2f)", worldTransform_.translation_.x,
+		  //     worldTransform_.translation_.y, worldTransform_.translation_.z);
+		  // ImGui::End();
 	}
 }
 
