@@ -5,9 +5,7 @@
 
 // 自機クラスの前方宣言
 class Player;
-class GameScene;
-
-
+//class GameScene;
 
 class Enemy {
 public:
@@ -29,12 +27,13 @@ public:
 	// setterの利用
 	void SetPlayer(Player* player) { player_ = player; }
 	//敵が作った球をゲームシーンのリストに登録するため
-	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
+	//
+	// void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 	//// 弾リストを取得
-	//const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
+	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
 	// 大きさ取得
 	int GetRadius();
 
@@ -75,7 +74,7 @@ private:
 	Player* player_ = nullptr;
 
 	//ゲームシーン
-	GameScene* gameScene_ = nullptr;
+	//GameScene* gameScene_ = nullptr;
 
 	//スピード
 	Vector3 Speed = {0.1f, 0.1f, 0};

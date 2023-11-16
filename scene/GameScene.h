@@ -68,7 +68,7 @@ public: // メンバ関数
 	/// エネミーが発射した弾を登録する関数
 	/// </summary>
 	/// <param name="enemyBullet"></param>
-	void AddEnemyBullet(EnemyBullet* enemyBullet);
+//	void AddEnemyBullet(EnemyBullet* enemyBullet);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;

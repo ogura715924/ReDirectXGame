@@ -3,20 +3,18 @@
 #include <assert.h>
 #include <cassert>
 #include"GameScene.h"
-
-//#include "Normalize.h"
-
-//#include "MyMath.h"
+#include "Normalize.h"
+#include "MyMath.h"
 
 // デストラクタ
 Enemy::~Enemy() {
 
 	// bullet_の解放
-
+	delete bullet_;
 	//引っ越した
-	/*for (EnemyBullet* bullet : bullets_) {
+	for (EnemyBullet* bullet : bullets_) {
 		delete bullet;
-	}*/
+	}
 }
 
 Vector3 Enemy::GetWorldPosition() {
@@ -118,7 +116,7 @@ void Enemy::Fire() {
 	assert(player_);
 
 	// 弾の速度
-	const float kBulletSpeed = 1.0f;
+	const float kBulletSpeed = 0.5f;
 
 	// 自キャラのワールド座標を取得する
 	player_->GetWorldPosition();
@@ -130,7 +128,7 @@ void Enemy::Fire() {
 	    GetWorldPosition().y - player_->GetWorldPosition().y,
 	    GetWorldPosition().z - player_->GetWorldPosition().z};
 	// ベクトルの正規化
-	//DifferenceVector = Normalize(DifferenceVector);
+	DifferenceVector = Normalize(DifferenceVector);
 	// ベクトルの長さを速さに合わせる
 	velocity_.x = DifferenceVector.x * kBulletSpeed;
 	velocity_.y = DifferenceVector.y * kBulletSpeed;
@@ -141,14 +139,14 @@ void Enemy::Fire() {
 	newBullet->Intialize(model_, worldTransform_.translation_, velocity_);
 
 	// 弾を登録する
-	gameScene_->AddEnemyBullet(newBullet);
+//	gameScene_->AddEnemyBullet(newBullet);
 
 	// 引っ越した
-	//bullets_.push_back(newBullet);
+	bullets_.push_back(newBullet);
 }
 
 void Enemy::OnCollision() {
-//何もしない
+//ゲームクリアにする
 }
 
 void Enemy::ApproachInitialize() {
@@ -162,7 +160,7 @@ void Enemy::Draw(const ViewProjection& viewProjection_) {
 
 
 	//引っ越した
-	/*for (EnemyBullet* bullet : bullets_) {
+	for (EnemyBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection_);
-	}*/
+	}
 }

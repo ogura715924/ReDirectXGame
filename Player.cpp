@@ -12,21 +12,19 @@
 // デストラクタ
 Player::~Player() {
 
-	// bullet_の解放
-
 	for (PlayerBullet* bullet : bullets_) {
 		// bullets -> PlayerBullet*のリスト(配列のすごい版)
 		// 範囲forで何をやっているか
 		// bullet = bullets_[i];をやっていてbullets_の数分だけループする
 		delete bullet;
-
 		//Sprite::Create()のところの解放
 		delete sprite2DReticle_;
+	bullets_.clear();
 	}
 }
 
 void Player::OnCollision() {
-//何もしない
+//ゲームオーバーにする
 }
 
 Vector3 Player::GetWorldPosition() {
@@ -67,9 +65,6 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 PlayerPost
 
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
-
-	// 発射間隔初期化
-	Interval();
 
 	// 3Dレティクルのワールドトラベル初期化
 	worldTransform3DReticle_.Initialize();
@@ -148,12 +143,8 @@ void Player::Update(const ViewProjection& viewProjection) {
 		}
 		return false;
 	});
-	// 発射タイマーカウントダウン
-	AttackTimer--;
-	// 指定した時間に達した
-	if (input_->PushKey(DIK_SPACE) && AttackTimer <= 0) {
-		// 発射タイマーを戻す
-		AttackTimer = kAttackInterval;
+	if (input_->TriggerKey(DIK_SPACE)) {
+		
 	}
 
 	// 行列を定数バッファに転送
@@ -162,7 +153,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 	// 自機のワールド座標から3Dレティクルのワールド座標を計算
 	{
 		// 自機から3Dレティクルへの距離
-		const float kDistancePlayerTo3DReticle = 0.0f;
+		const float kDistancePlayerTo3DReticle = 50.0f;
 		// 自機から3Dレティクルへのオフセット(Z+向き)
 		Vector3 offset = {0, 0, 1.0f};
 		// 自機のワールド行列の回転を反映
@@ -211,6 +202,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 
 		  //クライアントエリア座標に変換する
 		  HWND hwnd = WinApp::GetInstance()->GetHwnd();
+		  ScreenToClient(hwnd, &mousePosition);
 		  // スプライトのレティクルに座標設定
 		   sprite2DReticle_->SetPosition(Vector2((float)mousePosition.x, (float)mousePosition.y));
 		  ScreenToClient(hwnd, &mousePosition);
@@ -238,7 +230,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 		  mouseDirection = Normalize(mouseDirection);
 
 		  // カメラから照準オブジェクトの距離
-		  const float kDistanceTestObject = 50.0f;
+		  const float kDistanceTestObject = 0.0f;
 		  worldTransform3DReticle_.translation_.x =
 		      (mouseDirection.x * kDistanceTestObject) + posNear.x;
 		  worldTransform3DReticle_.translation_.y =
@@ -278,10 +270,10 @@ void Player::Rotate() {
 void Player::Attack() {
 	// 弾を生成し、初期化
 
-	if (input_->PushKey(DIK_SPACE) && AttackTimer <= 0) {
+	if (input_->TriggerKey(DIK_SPACE)) {
 
 		// 弾の速度
-		const float kBulletSpeed = 1.0f;
+		const float kBulletSpeed = 1.5f;
 		Vector3 velocity(0, 0, kBulletSpeed);
 
 		// 速度ベクトルを自機の向きに合わせて回転させる
@@ -302,11 +294,6 @@ void Player::Attack() {
 		velocity.y *= kBulletSpeed;
 		velocity.z *= kBulletSpeed;
 	}
-}
-
-void Player::Interval() {
-	// 発射タイマーを初期化
-	AttackTimer = 3;
 }
 
 void Player::Draw(const ViewProjection& ViewProjection) {

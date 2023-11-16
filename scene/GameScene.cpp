@@ -25,6 +25,7 @@ GameScene::~GameScene() {
 		delete bullet;
 	}
 	enemyBullets_.clear();
+	
 }
 
 void GameScene::Initialize() {
@@ -67,8 +68,9 @@ void GameScene::Initialize() {
 	Vector3 position(0.0f, 0.0f, 1.0f); // 速度を設定する
 	enemy_->Initialize(model_, position);
 	//敵キャラにゲームシーンを渡す
-	enemy_->SetGameScene(this);
+	//enemy_->SetGameScene(this);
 
+	
 
 	
 		// 3Dモデルの生成
@@ -91,6 +93,7 @@ void GameScene::Initialize() {
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
 
+	
 
 }
 
@@ -169,9 +172,9 @@ void GameScene::Draw() {
 
 
 	//敵弾引っ越してきた
-	for (EnemyBullet* bullet : enemyBullets_) {
-		bullet->Draw(viewProjection_);
-	}
+	//for (EnemyBullet* bullet : enemyBullets_) {
+	//	bullet->Draw(viewProjection_);
+	//}
 
 
 
@@ -202,11 +205,12 @@ void GameScene::CheckAllCollisions() {
 	int RadiusA, RadiusB;
 	float PositionMeasure;
 	int RadiusMeasure;
-
+	
 	//自弾リストの取得
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 	// 敵弾リストの取得
 	//const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+	
 
 	#pragma region 自キャラと敵弾の当たり判定
 
@@ -396,13 +400,13 @@ void GameScene::SpawnEnemy(Vector3 pos) {
 	    enemy->SetPlayer(player_);
 	    // 初期化
 	   enemy_->Initialize(model_, pos);
-	    enemy->SetGameScene(this);
+	   // enemy->SetGameScene(this);
 	  
 }
 
-void GameScene::AddEnemyBullet(EnemyBullet* enemyBullets) {
-//リストに登録する
-	    enemyBullets_.push_back(enemyBullets);
-}
+//void GameScene::AddEnemyBullet(EnemyBullet* enemyBullets) {
+////リストに登録する
+//	    enemyBullets_.push_back(enemyBullets);
+//}
 
 

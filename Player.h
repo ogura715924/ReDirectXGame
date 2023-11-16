@@ -21,8 +21,6 @@ public:
 	~Player();
 	//衝突を検知したら呼び出されるコールバック関数
 	void OnCollision();
-	// 発射間隔
-	void Interval();
 	// 描画
 	void Draw(const ViewProjection& viewProjection_);
 	//UI描画
@@ -54,8 +52,6 @@ private:
 	Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
-	// 発射タイマー
-	int32_t AttackTimer = 0;
 
 	// 3Dレティクル用ワールドトランスフォーム
 	WorldTransform worldTransform3DReticle_;
