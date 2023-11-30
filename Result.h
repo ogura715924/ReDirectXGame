@@ -8,16 +8,13 @@
 #include "Score.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include <Scene.h>
 
 
 
 class Result {
-public: // メンバ関数
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
+public:
 	Result();
-
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
@@ -38,26 +35,24 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void GCOnColision();
+	void GOOnColision();
+
+	bool IsSceneEnd() { return isSceneEnd_; }
+	Scene::SceneType NextScene() { return Scene::SceneType::kTitle; }
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
-	int32_t MeterCount = 0;
-	Score* score_ = nullptr;
+	bool isSceneEnd_ = false;
 
-	// リザルト
-	uint32_t TextureHandle_[11]{};
+	uint32_t soundDataHandle_ = 0;
 
-	// スコアの描画
-	Sprite* sprite0 = nullptr;
-	Sprite* sprite1 = nullptr;
-	Sprite* sprite2 = nullptr;
-	Sprite* sprite3 = nullptr;
-	Sprite* sprite4 = nullptr;
-
-	// スコア変動
-	int32_t eachNumber[4]{};
-
-
+	// 画像
+	uint32_t textureHandleGO_ = 0;
+	Sprite* spriteGO_ = nullptr;
+	uint32_t textureHandleGC_ = 0;
+	Sprite* spriteGC_ = nullptr;
 };

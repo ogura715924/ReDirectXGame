@@ -93,7 +93,8 @@ void GameScene::Initialize() {
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
 
-	
+	result_ = new Result;
+	result_->Initialize();
 
 }
 
@@ -233,6 +234,7 @@ void GameScene::CheckAllCollisions() {
 			player_->OnCollision();
 			// 敵弾の衝突時コールバックを呼び出す
 			bullet->OnCollision();
+			result_->GOOnColision();
 		}
 	}
 #pragma endregion
@@ -258,6 +260,7 @@ void GameScene::CheckAllCollisions() {
 			enemy_->OnCollision();
 			// 自弾の衝突時コールバックを呼び出す
 			bullet->OnCollision();
+			result_->GCOnColision();
 		}
 	}
 #pragma endregion
@@ -309,6 +312,7 @@ void GameScene::CheckAllCollisions() {
 			player_->OnCollision();
 			// 敵キャラの衝突時コールバックを呼び出す
 			enemy_->OnCollision();
+		    result_->GOOnColision();
 		}
 #pragma endregion
 

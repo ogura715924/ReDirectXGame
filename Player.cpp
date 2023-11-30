@@ -12,20 +12,14 @@
 // デストラクタ
 Player::~Player() {
 
-	for (PlayerBullet* bullet : bullets_) {
-		// bullets -> PlayerBullet*のリスト(配列のすごい版)
-		// 範囲forで何をやっているか
-		// bullet = bullets_[i];をやっていてbullets_の数分だけループする
-		delete bullet;
-		//Sprite::Create()のところの解放
-		delete sprite2DReticle_;
-	bullets_.clear();
-	}
+	//for (PlayerBullet* bullet : bullets_) {
+	//	delete bullet;
+	//	delete sprite2DReticle_;
+	//bullets_.clear();
+	//}
 }
 
-void Player::OnCollision() {
-//ゲームオーバーにする
-}
+void Player::OnCollision() { isDead_ = true; }
 
 Vector3 Player::GetWorldPosition() {
 
@@ -44,7 +38,6 @@ int Player::GetRadius() { return int(); }
 void Player::SetParent(const WorldTransform* parent) {
 	//親子関係を結ぶ
 	worldTransform_.parent_ = parent;
-
 }
 
 void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 PlayerPostion) {

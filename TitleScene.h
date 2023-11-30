@@ -35,7 +35,7 @@ class TitleScene {
 	    void Draw();
 
 	    bool IsSceneEnd() { return isSceneEnd_; }
-	    Scene::SceneType NextScene() { return Scene::SceneType::kGameExplanation; }
+	    Scene::SceneType NextScene() { return Scene::SceneType::kGamePlay; }
 
 	   
 

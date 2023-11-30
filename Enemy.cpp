@@ -47,7 +47,7 @@ void Enemy::Initialize(Model* model, const Vector3& velocity) {
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 
-	worldTransform_.translation_.z = 3.0f;
+	worldTransform_.translation_.z = 2.0f;
 }
 
 void Enemy::Update() {

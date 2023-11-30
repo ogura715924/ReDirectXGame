@@ -7,6 +7,14 @@ TitleScene::~TitleScene(){ delete sprite_; };
 void TitleScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
+	audio_ = Audio::GetInstance();
+
+		// 画像
+	textureHandle_ = TextureManager::Load("tttl.png");
+	sprite_ = Sprite::Create(textureHandle_, {0, 0});
+	// 音
+	soundDataHandle_ = audio_->LoadWave("bgm.wav");
+	audio_->PlayWave(soundDataHandle_, true);
 	}
 	
 	

@@ -77,5 +77,5 @@ private:
 	//GameScene* gameScene_ = nullptr;
 
 	//スピード
-	Vector3 Speed = {0.1f, 0.1f, 0};
+	Vector3 Speed = {0.05f, 0.05f, 0};
 };

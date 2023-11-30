@@ -41,6 +41,11 @@ public:
 
 	void SetParent(const WorldTransform* parent);
 
+	
+	// メンバ関数の追加
+	bool IsDead() const { return isDead_; }
+	// デスフラグ
+	bool isDead_ = false;
 
 private:
 	// 弾
