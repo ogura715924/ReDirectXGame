@@ -1,6 +1,5 @@
 ﻿#include "RailCamera.h"
 #include <MyMath.h>
-#include <imgui.h>
 
 void RailCamera::Initialize(Vector3 pos, Vector3 rotation) {
 
@@ -35,10 +34,10 @@ void RailCamera::Update() {
 
 
 	// カメラの座標を画面表示する処理
-	ImGui::Begin("Camera");
-	//スライダーでカメラのtranslationを表示
-	ImGui::SliderFloat3("Position", &worldTransform_.translation_.x, -18.0f, 34.0f);
-	//スライダーでカメラのrotationを表示
-	ImGui::SliderFloat3("Rotate", &worldTransform_.rotation_.x, -18.0f, 34.0f);
-	ImGui::End();
+	//ImGui::Begin("Camera");
+	////スライダーでカメラのtranslationを表示
+	//ImGui::SliderFloat3("Position", &worldTransform_.translation_.x, -18.0f, 34.0f);
+	////スライダーでカメラのrotationを表示
+	//ImGui::SliderFloat3("Rotate", &worldTransform_.rotation_.x, -18.0f, 34.0f);
+	//ImGui::End();
 }

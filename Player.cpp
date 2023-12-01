@@ -2,7 +2,7 @@
 #include "WorldTransform.h"
 #include <assert.h>
 #include <cassert>
-#include <imgui.h>
+//#include <imgui.h>
 #include <math.h>
 #include "MyMath.h"
 #include <WinApp.h>
