@@ -8,6 +8,7 @@
 #include "WinApp.h"
 #include <TitleScene.h>
 #include <Result.h>
+#include"GameOver.h"
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -69,6 +70,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Result* result_ = new Result();
 	result_->Initialize();
 
+	GameOver* over_ = new GameOver();
+	over_->Initialize();
+
 	Scene::SceneType sceneNo = Scene::SceneType::kTitle;
 
 	// メインループ
@@ -98,8 +102,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// ゲームシーンの毎フレーム処理
 			gameScene->Update();
 
-			if (gameScene->IsSceneEnd()) {
-				sceneNo = gameScene->NextScene();
+			if (gameScene->IsSceneEndOver()) {
+			    sceneNo = gameScene->OverScene();
+			}
+
+			if (gameScene->IsSceneEndClear()) {
+				sceneNo = gameScene->ClearScene();
 			}
 
 			break;
@@ -114,7 +122,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			break;
-		}
+
+		case Scene::SceneType::kGameOver:
+
+			over_->Update();
+
+			if (over_->IsSceneEnd()) {
+				// 次のシーンの値を代入してシーンを切り替え
+				sceneNo = over_->NextScene();
+			}
+
+			break;
+	}
+
 
 		// 軸表示の更新
 		axisIndicator->Update();
@@ -137,6 +157,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case Scene::SceneType::kGameResult:
 			result_->Draw();
+			break;
+
+			case Scene::SceneType::kGameOver:
+			over_->Draw();
 			break;
 
 		}

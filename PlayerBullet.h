@@ -24,7 +24,7 @@ public:
 		// ワールド座標を取得
 	Vector3 GetWorldPosition();
 	// 大きさ取得
-	int GetRadius();
+	Vector3 GetRadius();
 
 private:
 	// ワールド変換データ
@@ -36,5 +36,5 @@ private:
 	// 速度
 	Vector3 velocity_;
 	// 寿命
-	static const int32_t kLifeTime = 120 * 5;
+	static const int32_t kLifeTime = 60 * 5;
 };

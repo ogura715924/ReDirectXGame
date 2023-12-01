@@ -33,7 +33,7 @@ Vector3 Player::GetWorldPosition() {
 	return worldPos;
 }
 
-int Player::GetRadius() { return int(); }
+Vector3 Player::GetRadius() { return worldTransform_.scale_; }
 
 void Player::SetParent(const WorldTransform* parent) {
 	//親子関係を結ぶ
@@ -136,9 +136,6 @@ void Player::Update(const ViewProjection& viewProjection) {
 		}
 		return false;
 	});
-	if (input_->TriggerKey(DIK_SPACE)) {
-		
-	}
 
 	// 行列を定数バッファに転送
 	worldTransform_.UpdateMatrix();
@@ -257,6 +254,11 @@ void Player::Rotate() {
 		worldTransform_.rotation_.y -= kRotSpeed;
 	} else if (input_->PushKey(DIK_D)) {
 		worldTransform_.rotation_.y += kRotSpeed;
+	}
+	if (input_->PushKey(DIK_W)) {
+		worldTransform_.rotation_.x -= kRotSpeed;
+	} else if (input_->PushKey(DIK_S)) {
+		worldTransform_.rotation_.x += kRotSpeed;
 	}
 }
 

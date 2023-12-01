@@ -17,7 +17,6 @@
 #include"EnemyBullet.h"
 #include<sstream>
 #include <Scene.h>
-#include"Result.h"
 
 /// <summary>
 /// ゲームシーン
@@ -66,8 +65,10 @@ public: // メンバ関数
 	/// 敵の発生処理
 	void SpawnEnemy(Vector3 pos);
 
-	bool IsSceneEnd() { return isSceneEnd_; }
-	Scene::SceneType NextScene() { return Scene::SceneType::kGameResult; }
+	bool IsSceneEndOver() { return isSceneEndO_; }
+	bool IsSceneEndClear() { return isSceneEndC_; }
+	Scene::SceneType ClearScene() { return Scene::SceneType::kGameResult; }
+	Scene::SceneType OverScene() { return Scene::SceneType::kGameOver; }
 
 	/// <summary>
 	/// エネミーが発射した弾を登録する関数
@@ -105,7 +106,8 @@ private: // メンバ変数
 	//敵発生コマンド
 	std::stringstream enemyPopCommands;
 
-	Result* result_=nullptr;
+
+	
 
 		// 敵が発生待機中か
 	bool isWait_ = false;
@@ -116,7 +118,8 @@ private: // メンバ変数
 	// 弾
 	std::list<EnemyBullet*> enemyBullets_;
 
-bool isSceneEnd_ = false;
+bool isSceneEndO_ = false;
+	bool isSceneEndC_ = false;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

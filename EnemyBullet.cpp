@@ -54,4 +54,4 @@ Vector3 EnemyBullet::GetWorldPosition() { // ワールド座標を入れる変�
 	return worldPos;
 }
 
-int EnemyBullet::GetRadius() { return 0; }
+Vector3 EnemyBullet::GetRadius() { return worldTransform_.scale_; }

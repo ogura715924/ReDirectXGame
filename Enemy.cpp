@@ -29,7 +29,7 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
-int Enemy::GetRadius() { return 0; }
+Vector3 Enemy::GetRadius() { return worldTransform_.scale_; }
 
 void Enemy::Initialize(Model* model, const Vector3& velocity) {
 	// NULLポインタチェック
@@ -47,7 +47,7 @@ void Enemy::Initialize(Model* model, const Vector3& velocity) {
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 
-	worldTransform_.translation_.z = 2.0f;
+	worldTransform_.translation_ = {10.0f,10.f,1.0f};
 }
 
 void Enemy::Update() {
@@ -151,7 +151,7 @@ void Enemy::OnCollision() {
 
 void Enemy::ApproachInitialize() {
 	// 発射タイマーを初期化
-	FireTimer = 3;
+	FireTimer = 5;
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection_) {

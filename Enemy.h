@@ -3,6 +3,7 @@
 #include "ViewProjection.h"
 #include <list>
 
+
 // 自機クラスの前方宣言
 class Player;
 //class GameScene;
@@ -35,10 +36,10 @@ public:
 	//// 弾リストを取得
 	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
 	// 大きさ取得
-	int GetRadius();
+Vector3 GetRadius();
 
 	// 発射間隔
-	static const int kFireInterval = 60;
+	static const int kFireInterval = 180;
 
 	
 

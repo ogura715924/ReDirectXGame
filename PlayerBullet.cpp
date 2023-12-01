@@ -53,4 +53,4 @@ Vector3 PlayerBullet::GetWorldPosition() { // ワールド座標を入れる変�
 	return worldPos;
 }
 
-int PlayerBullet::GetRadius() { return 0; }
+Vector3 PlayerBullet::GetRadius() {return worldTransform_.scale_; }

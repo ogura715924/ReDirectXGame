@@ -37,7 +37,7 @@ public:
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 	//大きさ取得
-	int GetRadius();
+	Vector3 GetRadius();
 
 	void SetParent(const WorldTransform* parent);
 

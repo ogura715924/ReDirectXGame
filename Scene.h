@@ -6,5 +6,6 @@ public:
 		kTitle,
 		kGamePlay,
 		kGameResult,
+		kGameOver,
 	};
 };

@@ -29,7 +29,6 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
-
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -70,9 +69,6 @@ void GameScene::Initialize() {
 	//敵キャラにゲームシーンを渡す
 	//enemy_->SetGameScene(this);
 
-	
-
-	
 		// 3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 
@@ -93,18 +89,14 @@ void GameScene::Initialize() {
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
 
-	result_ = new Result;
-	result_->Initialize();
+	isSceneEndO_ = false;
+	isSceneEndC_ = false;
 
 }
 
 void GameScene::Update() {
-
-	// #ifdef _DEBUG
-	//	if (input_->TriggerKey(A)){
-	////デバッグカメラ有効フラグをトグル
-	//}
-	// #endif
+	isSceneEndC_ = false;
+	isSceneEndO_ = false;
 	// カメラの処理
 	if (isDebugCameraActive_) {
 		// デバックカメラの更新処理入れる
@@ -123,18 +115,13 @@ void GameScene::Update() {
 	// 敵キャラの更新
 	enemy_->Update();
 	
-	// 当たり判定
-	CheckAllCollisions();
-	
 	//スカイドーム
 	skydome_->Update();
 
 	//レールカメラ
 	railCamera_->Update();
-
-
-	
-	
+	// 当たり判定
+	CheckAllCollisions();
 }
 
 
@@ -144,10 +131,6 @@ void GameScene::Draw() {
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 
 	// #pragma region背景スプライト描画
-
-	/// <summary>
-	/// ここに背景スプライトの描画処理を追加できる
-	/// </summary>
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -173,13 +156,9 @@ void GameScene::Draw() {
 
 
 	//敵弾引っ越してきた
-	//for (EnemyBullet* bullet : enemyBullets_) {
-	//	bullet->Draw(viewProjection_);
-	//}
-
-
-
-
+	for (EnemyBullet* bullet : enemyBullets_) {
+		bullet->Draw(viewProjection_);
+	}
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -203,14 +182,14 @@ void GameScene::CheckAllCollisions() {
 
 //判定対象AとBの座標
 	Vector3 PosA, PosB;
-	int RadiusA, RadiusB;
+	Vector3 RadiusA, RadiusB;
 	float PositionMeasure;
 	int RadiusMeasure;
 	
 	//自弾リストの取得
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 	// 敵弾リストの取得
-	//const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
 	
 
 	#pragma region 自キャラと敵弾の当たり判定
@@ -219,7 +198,7 @@ void GameScene::CheckAllCollisions() {
 	PosA = player_->GetWorldPosition();
 	RadiusA = player_->GetRadius();
 	//自キャラと敵弾全ての当たり判定
-	for (EnemyBullet* bullet : enemyBullets_) {
+	for (EnemyBullet* bullet : enemyBullets) {
 	//敵弾の座標
 		PosB = bullet->GetWorldPosition();
 		RadiusB = bullet->GetRadius();
@@ -227,14 +206,15 @@ void GameScene::CheckAllCollisions() {
 		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) +
 			        (PosB.y - PosA.y) * (PosB.y - PosA.y) +
 		            (PosB.z - PosA.z) * (PosB.z - PosA.z);
-		RadiusMeasure = (RadiusA + RadiusB) * (RadiusA + RadiusB);
+		RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
 		//弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
 			// 自キャラの衝突時コールバックを呼び出す
 			player_->OnCollision();
 			// 敵弾の衝突時コールバックを呼び出す
 			bullet->OnCollision();
-			result_->GOOnColision();
+			isSceneEndO_ = true;
+			
 		}
 	}
 #pragma endregion
@@ -253,14 +233,14 @@ void GameScene::CheckAllCollisions() {
 		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) + 
 			        (PosB.y - PosA.y) * (PosB.y - PosA.y) +
 		            (PosB.z - PosA.z) * (PosB.z - PosA.z);
-		RadiusMeasure = (RadiusA + RadiusB) * (RadiusA + RadiusB);
+		RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
 			// 敵キャラの衝突時コールバックを呼び出す
 			enemy_->OnCollision();
 			// 自弾の衝突時コールバックを呼び出す
 			bullet->OnCollision();
-			result_->GCOnColision();
+			isSceneEndC_ = true;
 		}
 	}
 #pragma endregion
@@ -269,7 +249,7 @@ void GameScene::CheckAllCollisions() {
 
 	// 自キャラと敵弾全ての当たり判定
 	for (PlayerBullet* bulletA : playerBullets) {
-		for (EnemyBullet* bulletB : enemyBullets_) {
+		for (EnemyBullet* bulletB : enemyBullets) {
 			// 自弾の座標
 			PosA = bulletA->GetWorldPosition();
 			RadiusA = bulletA->GetRadius();
@@ -280,7 +260,7 @@ void GameScene::CheckAllCollisions() {
 			            (PosB.y - PosA.y) * (PosB.y - PosA.y) +
 			            (PosB.z - PosA.z) * (PosB.z - PosA.z);
 
-			 RadiusMeasure = (RadiusA + RadiusB) * (RadiusA + RadiusB);
+			 RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
 
 			if (PositionMeasure <= RadiusMeasure) {
 				// 自弾の衝突時コールバックを呼び出す
@@ -305,14 +285,14 @@ void GameScene::CheckAllCollisions() {
 		// 座標AとBの距離を求める
 		PositionMeasure = (PosB.x - PosA.x) * (PosB.x - PosA.x) + (PosB.y - PosA.y) * (PosB.y - PosA.y) +
 		            (PosB.z - PosA.z) * (PosB.z - PosA.z);
-		RadiusMeasure = (RadiusA + RadiusB) * (RadiusA + RadiusB);
+	    RadiusMeasure = (int)(Dot(RadiusA, RadiusB)) * (int)(Dot(RadiusA, RadiusB));
 		// 弾と弾の交差判定
 		if (PositionMeasure <= RadiusMeasure) {
 			// 自キャラの衝突時コールバックを呼び出す
 			player_->OnCollision();
 			// 敵キャラの衝突時コールバックを呼び出す
 			enemy_->OnCollision();
-		    result_->GOOnColision();
+		    isSceneEndO_ = true;
 		}
 #pragma endregion
 

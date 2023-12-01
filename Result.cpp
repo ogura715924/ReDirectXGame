@@ -10,14 +10,17 @@ void Result::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 
-	// 画像
-	textureHandleGO_ = TextureManager::Load("GameOv.png");
 	
 	// 画像
 	textureHandleGC_ = TextureManager::Load("GameCl.png");
 };
 
-void Result::Update(){};
+void Result::Update(){
+	isSceneEnd_ = false;
+	if (input_->TriggerKey(DIK_SPACE)) {
+		isSceneEnd_ = true;
+	}
+};
 
 void Result::Draw() {
 	 // コマンドリストの取得
@@ -26,13 +29,12 @@ void Result::Draw() {
 #pragma region 背景スプライト描画
 	 // 背景スプライト描画前処理
 	 Sprite::PreDraw(commandList);
-
+	 spriteGC_ = Sprite::Create(textureHandleGC_, {0, 0}); 
 	 /// <summary>
 	 /// ここに背景スプライトの描画処理を追加できる
 	 /// </summary>
 	 // 画像
 	 spriteGC_->Draw();
-	 spriteGO_->Draw();
 	 // スプライト描画後処理
 	 Sprite::PostDraw();
 	 // 深度バッファクリア
@@ -64,15 +66,3 @@ void Result::Draw() {
 
 #pragma endregion
 }
-void Result::GCOnColision() {
-	spriteGO_ = Sprite::Create(textureHandleGO_, {0, 0}); 
-if (input_->TriggerKey(DIK_SPACE)) {
-		 isSceneEnd_ = true;
-	 }
-};
-void Result::GOOnColision() {
-	 spriteGC_ = Sprite::Create(textureHandleGC_, {0, 0});
-	 if (input_->TriggerKey(DIK_SPACE)) {
-		 isSceneEnd_ = true;
-	 }
-};
